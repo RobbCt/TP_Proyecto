@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1758495807 source:c:\users\roberto\desktop\material\topicos\repotp-proyectos\tp_proyecto\ipc_analyzer\funciones.c
+
+1584205420 source:c:\users\roberto\desktop\material\topicos\repotp-proyectos\tp_proyecto\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+
