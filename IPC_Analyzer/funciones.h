@@ -8,9 +8,9 @@ typedef struct
     char cod[21];
     char descrip[31];
     char clasi[31];
-    double float ind_ipc;
-    double float v_m_ipc;
-    double float V_i_a_ipc;
+    double ind_ipc;
+    double v_m_ipc;
+    double V_i_a_ipc;
     char region[10];
     int periodo_codif;
 
