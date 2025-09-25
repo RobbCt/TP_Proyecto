@@ -1,0 +1,16 @@
+Codigo;Descripcion_aperturas;Clasificador;Periodo;Indice_IPC;v_m_IPC;v_i_a_IPC;Region
+0;Nivel general;Nivel general y divisiones COICOP;201612;100;NA;NA;Pampeana
+0;Nivel general;Nivel general y divisiones COICOP;201612;100;NA;NA;Noreste
+1;Alimentos y bebidas no alcohólicas;Nivel general y divisiones COICOP;201701;102.3;2.3;2.3;Cuyo
+2;Bebidas alcohólicas y tabaco;Nivel general y divisiones COICOP;201701;101.2;1.2;1.2;Patagonia
+3;Prendas de vestir y calzado;Nivel general y divisiones COICOP;201702;103.5;1.8;3.5;GBA
+4;Vivienda, agua, electricidad, gas y otros combustibles;Nivel general y divisiones COICOP;201702;104.7;2.0;4.7;Noroeste
+5;Equipamiento y mantenimiento del hogar;Nivel general y divisiones COICOP;201703;101.9;-0.5;1.9;Pampeana
+6;Salud;Nivel general y divisiones COICOP;201703;105.6;3.7;5.6;Noreste
+7;Transporte;Nivel general y divisiones COICOP;201704;107.8;2.2;7.8;Cuyo
+8;Comunicación;Nivel general y divisiones COICOP;201704;100.4;-0.3;0.4;Patagonia
+9;Recreación y cultura;Nivel general y divisiones COICOP;201705;102.7;1.1;2.7;GBA
+10;Educación;Nivel general y divisiones COICOP;201705;106.5;3.8;6.5;Noroeste
+11;Restaurantes y hoteles;Nivel general y divisiones COICOP;201706;104.2;1.5;4.2;Pampeana
+12;Bienes y servicios varios;Nivel general y divisiones COICOP;201706;101.1;-0.7;1.1;Noreste
+0;Nivel general;Nivel general y divisiones COICOP;201706;107.0;2.0;7.0;Patagonia
