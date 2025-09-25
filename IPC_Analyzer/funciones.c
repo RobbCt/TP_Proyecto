@@ -1,6 +1,6 @@
 #include "funciones.h"
 
-DIVISION* divisionDecodificarFecha(DIVISION* registro)
+void divisionDecoFecha(DIVISION* registro)
 {
     //- Para el dígito 7 corresponde un 0.
     //- Para el dígito 4 corresponde un 1.
@@ -13,7 +13,8 @@ DIVISION* divisionDecodificarFecha(DIVISION* registro)
     //- Para el dígito 2 corresponde un 8.
 
     /*armamos matriz para ahorrarme el switch*/
-    int mat[9]={7,4,9,8,0,6,1,3,2};
+    int vec[9]={7,4,9,8,0,6,1,3,2};
+
 
     int cifra[6], i;
     int anio=registro->periodo_codif.anio, mes=registro->periodo_codif.mes;
@@ -27,25 +28,23 @@ DIVISION* divisionDecodificarFecha(DIVISION* registro)
     *(cifra+5)= mes% 10;
 
     //duda personal: es necesario validar que se decodificaron fechas validas o nel? si es asi validarlo por algun lado¿
-
-    for (i=0;i<=5;i++) //muchas iteraciones, optimizable
+    for (i=0,int j;i<6;i++) //muchas iteraciones, optimizable
     {
-        for(int j=0;j<9;j++)
-            if(*(mat+j)==*(cifra+i))
-            {
-                 *(cifra+i)=j;
-                 break;
-            }
+        j = 0;
+        while(*(vec+j) != *(cifra+i))
+        {
+            j++;
+        }
+
+        *(cifra+i) = j;
     }
 
-    registro->periodo_codif.anio= *(cifra)*1000+*(cifra+1)*100+*(cifra+2)*10+*(cifra+3);
-    registro->periodo_codif.mes= *(cifra+4)*10+*(cifra+5);
+    registro -> periodo_codif.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
+    registro -> periodo_codif.mes = *(cifra+4)*10 + *(cifra+5);
 
 
     //a todo esto optimizarlo, replazar vectores con aritemtica de punteros
     //ver si se pude remplazar el swicth con macros, validaciones etc etc...
-
-    return registro;
     //fijate como hace las funciones de este tipo el profe
     //opciones->    retornar direccion (ambiguo)/ trabajar con la direccion y no retornar nada
 }

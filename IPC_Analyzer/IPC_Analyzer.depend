@@ -11,3 +11,17 @@
 	<stdio.h>
 	<stdlib.h>
 
+1758812384 source:c:\users\usuario\downloads\t. p. de tópicos 2025-02\tp_proyecto\ipc_analyzer\funciones.c
+	"funciones.h"
+
+1758812065 c:\users\usuario\downloads\t. p. de tópicos 2025-02\tp_proyecto\ipc_analyzer\funciones.h
+
+1758815842 source:c:\users\usuario\downloads\t. p. de tópicos 2025-02\tp_proyecto\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<windows.h>
+	"funciones.h"
+	<stdlib.h>
+	<windows.h>
+	"funciones.h"
+
