@@ -9,16 +9,16 @@ int main()
 {
     DIVISION reg[10] = {
     // {cod, descrip, clasif, ind_ipc, v_m_ipc, v_i_a_ipc, region, periodo_codif}
-    {"0", "NIVEL GENERAL", "Nivel general y divisiones", 100.0, 0.0, 0.0, "GBA", 974149},
-    {"0", "NIVEL GENERAL", "Nivel general y divisiones", 100.0, 0.0, 0.0, "Nacional", 974149},
-    {"01", "Alimentos y bebidas no alcohólicas", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Pampeana", 974149},
-    {"02", "Bebidas alcohólicas y tabaco", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Noroeste", 974149},
-    {"03", "Prendas de vestir y calzado", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Cuyo", 974149},
-    {"04", "Vivienda, agua, electricidad, gas ", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Patagonia", 974149},
-    {"0", "NIVEL GENERAL", "Nivel general y divisiones COICOP", 101.313, 1.3, 0.0, "GBA", 974374},
-    {"01", "Alimentos y bebidas no alcohólicas", "Nivel general y divisiones COICOP", 101.3069, 1.3, 0.0, "GBA", 974374},
-    {"04", "gas y otros combustibles", "Nivel general y divisiones COICOP", 110.3184, 10.3, 0.0, "Patagonia", 974374},
-    {"70", "NA", "Categorias", 101.6969, 1.7,7.1, "Nacional", 974374}
+    {"023", "NIVEL GENERAL", "Nivel general", 150.0, 16.0, 18.5, "GBA", 974149},
+    {"045", "NIVEL GENERAL", "Nivel general y divisiones", 100.5, 90.0, 0.1, "Nacional", 974149},
+    {"x23", "bebidas alcohólicas", "Nivel general y COICOP", 140, 0.1, 10.0, "Pampeana", 974149},
+    {"11", "Bebidas y tabaco", "COICOP", 11, 500, 70, "Noroeste", 974149},
+    {"03", "Prendas de vestir", "divisiones COICOP", 70, 0, 14, "Cuyo", 974149},
+    {"04", "Vivienda, electricidad, gas ", "Nivel general", 80, 0, 14, "Patagonia", 974149},
+    {"35", "NIVEL GENERAL", "COICOP", 101.313, 1.3, 0, "GBA", 974374},
+    {"abc", "bebidas no alcohólicas", "COICOP", 101.3069, 1.3, 14, "GBA", 974374},
+    {"04", "gas y otros combustibles", "Nivel COICOP", 110.3184, 10.3, 19, "Patagonia", 974374},
+    {"xd", "NA", "Categorias", 101.6969, 1.7,7.1, "Nacional", 974374}
     //{"Estacional", "NA", "Categorias", 101.6969, 1.7,"NA", "Nacional", 974374} da problemas, pero es un # real
     };
     //pensar q ya tenemos los # en el programa, listos para testear
