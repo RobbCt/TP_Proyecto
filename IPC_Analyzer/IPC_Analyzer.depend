@@ -25,3 +25,18 @@
 	<windows.h>
 	"funciones.h"
 
+1758855031 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
+	"funciones.h"
+
+1758856484 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
+
+1758856407 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	"funciones.h"
+	<stdlib.h>
+	<windows.h>
+	"funciones.h"
+

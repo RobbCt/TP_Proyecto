@@ -20,7 +20,7 @@ typedef struct
 }DIVISION;
 
 //Primitivas
-DIVISION* divisionDecodificarFecha(DIVISION* registro);
+void divisionDecodificarFecha(DIVISION* registro);
 
 
 //primitivasn't

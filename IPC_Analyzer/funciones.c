@@ -28,7 +28,9 @@ void divisionDecoFecha(DIVISION* registro)
     *(cifra+5)= mes% 10;
 
     //duda personal: es necesario validar que se decodificaron fechas validas o nel? si es asi validarlo por algun lado¿
-    for (i=0,int j;i<6;i++) //muchas iteraciones, optimizable
+    int j;
+
+    for (i=0;i<6;i++) //muchas iteraciones, optimizable
     {
         j = 0;
         while(*(vec+j) != *(cifra+i))

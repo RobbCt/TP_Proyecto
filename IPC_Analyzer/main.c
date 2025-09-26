@@ -1,63 +1,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "funciones.h"
 
-int main() {
-    SetConsoleOutputCP(CP_UTF8);
-    SetConsoleCP(CP_UTF8);
+int main()
+{
+    DIVISION reg[10] = {
+    // {cod, descrip, clasif, ind_ipc, v_m_ipc, v_i_a_ipc, region, periodo_codif}
+    {"0", "NIVEL GENERAL", "Nivel general y divisiones", 100.0, 0.0, 0.0, "GBA", 974149},
+    {"0", "NIVEL GENERAL", "Nivel general y divisiones", 100.0, 0.0, 0.0, "Nacional", 974149},
+    {"01", "Alimentos y bebidas no alcohólicas", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Pampeana", 974149},
+    {"02", "Bebidas alcohólicas y tabaco", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Noroeste", 974149},
+    {"03", "Prendas de vestir y calzado", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Cuyo", 974149},
+    {"04", "Vivienda, agua, electricidad, gas ", "Nivel general y divisiones COICOP", 100.0, 0.0, 0.0, "Patagonia", 974149},
+    {"0", "NIVEL GENERAL", "Nivel general y divisiones COICOP", 101.313, 1.3, 0.0, "GBA", 974374},
+    {"01", "Alimentos y bebidas no alcohólicas", "Nivel general y divisiones COICOP", 101.3069, 1.3, 0.0, "GBA", 974374},
+    {"04", "gas y otros combustibles", "Nivel general y divisiones COICOP", 110.3184, 10.3, 0.0, "Patagonia", 974374},
+    {"70", "NA", "Categorias", 101.6969, 1.7,7.1, "Nacional", 974374}
+    //{"Estacional", "NA", "Categorias", 101.6969, 1.7,"NA", "Nacional", 974374} da problemas, pero es un # real
+    };
+    //pensar q ya tenemos los # en el programa, listos para testear
 
-    FILE *pf = fopen("../Data/serie_ipc_divisiones(test).csv", "rt");
-    if (pf == NULL) {
-        printf("ERROR al abrir archivo\n");
-        exit(1);
-    }
 
-    char linea[512];
-    fgets(linea, sizeof(linea), pf); // Leer encabezado y descartarlo
+    divisionDecoFecha(reg);
 
-    DIVISION reg;
 
-    while (fgets(linea, sizeof(linea), pf)) {
-        char cod[32], descrip[64], clasif[64], ind[32], vm[32], via[32], region[32], periodo[32];
-
-        // Separar por ;
-        if (sscanf(linea, "\"%[^\"]\";\"%[^\"]\";\"%[^\"]\";%31[^;];%31[^;];%31[^;];\"%[^\"]\";\"%[^\"]\"",
-                   cod, descrip, clasif, ind, vm, via, region, periodo) == 8) {
-
-            // Copiar strings a la struct
-            strncpy(reg.cod, cod, sizeof(reg.cod));
-            strncpy(reg.descrip, descrip, sizeof(reg.descrip));
-            strncpy(reg.clasif, clasif, sizeof(reg.clasif));
-            strncpy(reg.region, region, sizeof(reg.region));
-
-            // Convertir números (cambiando coma por punto)
-            for (char *p = ind; *p; p++) if (*p == ',') *p = '.';
-            for (char *p = vm; *p; p++) if (*p == ',') *p = '.';
-            for (char *p = via; *p; p++) if (*p == ',') *p = '.';
-
-            reg.ind_ipc   = (strcmp(ind, "NA") == 0) ? 0 : atof(ind);
-            reg.v_m_ipc   = (strcmp(vm, "NA") == 0) ? 0 : atof(vm);
-            reg.v_i_a_ipc = (strcmp(via, "NA") == 0) ? 0 : atof(via);
-
-            // Periodo como AAAAMM (ej. 974149 → año=9741 mes=49)
-            int periodo_num = atoi(periodo);
-            reg.periodo_codif.anio = periodo_num / 100;
-            reg.periodo_codif.mes  = periodo_num % 100;
-
-            // Mostrar resultado
-            printf("%s | %s | %s | %.2f | %.2f | %.2f | %s | %04d-%02d\n",
-                   reg.cod, reg.descrip, reg.clasif,
-                   reg.ind_ipc, reg.v_m_ipc, reg.v_i_a_ipc,
-                   reg.region, reg.periodo_codif.anio, reg.periodo_codif.mes);
-        }
-    }
-
-    fclose(pf);
     return 0;
 }
-
+//si hago %4d%2d para la fecha, podria separar los digitos en 2 campos diferentes o una variable de tipo estructura anidada
 
 
 
