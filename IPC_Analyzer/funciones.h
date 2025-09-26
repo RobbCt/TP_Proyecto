@@ -20,8 +20,9 @@ typedef struct
 }DIVISION;
 
 //Primitivas
-void divisionDecodificarFecha(DIVISION* registro);
+void divisionDecodificarFecha(DIVISION*);
 
+void convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
 
 //primitivasn't
 

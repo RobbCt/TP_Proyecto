@@ -50,3 +50,62 @@ void divisionDecoFecha(DIVISION* registro)
     //fijate como hace las funciones de este tipo el profe
     //opciones->    retornar direccion (ambiguo)/ trabajar con la direccion y no retornar nada
 }
+
+void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
+{
+    char stringFecha[17]; // 9 caracteres para el mes de nombre más largo ("septiembre"), 3 caracteres para la cadena " - ", 4 para el año y uno para el carácter de fin de línea
+    char nombreMes[10];
+
+    int mes = reg->periodo_codif.mes;
+    int anio = reg->periodo_codif.anio;
+
+    switch(mes)
+    {
+        case 1:
+            strcpy(nombreMes, "Enero");
+            break;
+        case 2:
+            strcpy(nombreMes, "Febrero");
+            break;
+        case 3:
+            strcpy(nombreMes, "Marzo");
+            break;
+        case 4:
+            strcpy(nombreMes, "ABril");
+            break;
+        case 5:
+            strcpy(nombreMes, "Mayo");
+            break;
+        case 6:
+            strcpy(nombreMes, "Junio");
+            break;
+        case 7:
+            strcpy(nombreMes, "Julio");
+            break;
+        case 8:
+            strcpy(nombreMes, "Agosto");
+            break;
+        case 9:
+            strcpy(nombreMes, "Septiembre");
+            break;
+        case 10:
+            strcpy(nombreMes, "Octubre");
+            break;
+        case 11:
+            strcpy(nombreMes, "Noviembre");
+            break;
+        case 12:
+            strcpy(nombreMes, "Diciembre");
+            break;
+      /*  case default:
+            printf("\nError");
+            getch();
+            exit(1);
+            break;  Nunca va a llegar a este break si se ejecuta exit(1) previamente. */
+    }
+
+    strcat(nombreMes, " - ");
+    strcat(nombreMes, anio);
+
+    printf("\n%s", nombreMes);
+}

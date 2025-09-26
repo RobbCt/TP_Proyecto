@@ -25,7 +25,7 @@ int main()
 
 
     divisionDecoFecha(reg);
-
+    convertirFechaDecodificadaAString(reg);
 
     return 0;
 }
