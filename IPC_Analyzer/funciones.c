@@ -1,4 +1,6 @@
 #include "funciones.h"
+#define MESES 12
+#define CANTMAXCHAR 17
 
 
 void divisionDecodificarFecha(DIVISION* registro)
@@ -56,62 +58,19 @@ void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
 {
     //char stringFecha[17]; // 9 caracteres para el mes de nombre más largo ("septiembre"), 3 caracteres para la cadena " - ", 4 para el año y uno para el carácter de fin de línea
     char nombreMes[17];
-    strcpy(nombreMes, reg->periodo_codif.periodo_letra);
-
     int mes = reg->periodo_codif.mes;
-
     int anio = reg->periodo_codif.anio;
-
     char anio_s[20];
 
-    switch(mes)
-    {
-        case 1:
-            strcpy(nombreMes, "Enero");
-            break;
-        case 2:
-            strcpy(nombreMes, "Febrero");
-            break;
-        case 3:
-            strcpy(nombreMes, "Marzo");
-            break;
-        case 4:
-            strcpy(nombreMes, "ABril");
-            break;
-        case 5:
-            strcpy(nombreMes, "Mayo");
-            break;
-        case 6:
-            strcpy(nombreMes, "Junio");
-            break;
-        case 7:
-            strcpy(nombreMes, "Julio");
-            break;
-        case 8:
-            strcpy(nombreMes, "Agosto");
-            break;
-        case 9:
-            strcpy(nombreMes, "Septiembre");
-            break;
-        case 10:
-            strcpy(nombreMes, "Octubre");
-            break;
-        case 11:
-            strcpy(nombreMes, "Noviembre");
-            break;
-        case 12:
-            strcpy(nombreMes, "Diciembre");
-            break;
-      /*  case default:
-            printf("\nError");
-            getch();
-            exit(1);
-            break;  Nunca va a llegar a este break si se ejecuta exit(1) previamente. */
-    }
+    char matMes[MESES][CANTMAXCHAR] = {{"Enero"},{"Febrero"},{"Marzo"},{"Abril"},{"Mayo"},{"Junio"},{"Julio"},
+                                      {"Agosto"},{"Septiembre"},{"Octubre"},{"Noviembre"},{"Diciembre"}};
+
+    strcpy(nombreMes,matMes+(mes-1));
+
 
     strcat(nombreMes, " - ");
+    //    convertido tipo de dato a convertir   dato a convertir
     sprintf(anio_s, "%d", anio);
     strcat(nombreMes, anio_s);
-
-    printf("\n%s", nombreMes);
+    strcpy(reg->periodo_codif.periodo_letra,nombreMes);
 }
