@@ -1,10 +1,14 @@
 #ifndef FUNCIONES_H_INCLUDED
 #define FUNCIONES_H_INCLUDED
+#include <string.h>
+#include <stdio.h>
+
 
 typedef struct
 {
     int anio; //4
     int mes; //2
+    char periodo_letra[17];
 }FECHA;
 
 typedef struct

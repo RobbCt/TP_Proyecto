@@ -1,6 +1,7 @@
 #include "funciones.h"
 
-void divisionDecoFecha(DIVISION* registro)
+
+void divisionDecodificarFecha(DIVISION* registro)
 {
     //- Para el dígito 7 corresponde un 0.
     //- Para el dígito 4 corresponde un 1.
@@ -53,11 +54,15 @@ void divisionDecoFecha(DIVISION* registro)
 
 void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
 {
-    char stringFecha[17]; // 9 caracteres para el mes de nombre más largo ("septiembre"), 3 caracteres para la cadena " - ", 4 para el año y uno para el carácter de fin de línea
-    char nombreMes[10];
+    //char stringFecha[17]; // 9 caracteres para el mes de nombre más largo ("septiembre"), 3 caracteres para la cadena " - ", 4 para el año y uno para el carácter de fin de línea
+    char nombreMes[17];
+    strcpy(nombreMes, reg->periodo_codif.periodo_letra);
 
     int mes = reg->periodo_codif.mes;
+
     int anio = reg->periodo_codif.anio;
+
+    char anio_s[20];
 
     switch(mes)
     {
@@ -105,7 +110,8 @@ void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
     }
 
     strcat(nombreMes, " - ");
-    strcat(nombreMes, anio);
+    sprintf(anio_s, "%d", anio);
+    strcat(nombreMes, anio_s);
 
     printf("\n%s", nombreMes);
 }
