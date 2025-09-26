@@ -19,7 +19,7 @@ void divisionDecodificarFecha(DIVISION* registro)
     int vec[9]={7,4,9,8,0,6,1,3,2};
 
 
-    int cifra[6], i;
+    int cifra[6];
     int anio=registro->periodo_codif.anio, mes=registro->periodo_codif.mes;
 
     *(cifra)=(anio/1000)% 10;
@@ -30,31 +30,22 @@ void divisionDecodificarFecha(DIVISION* registro)
     *(cifra+4)=(mes/10)% 10;
     *(cifra+5)= mes% 10;
 
-    //duda personal: es necesario validar que se decodificaron fechas validas o nel? si es asi validarlo por algun lado¿
-    int j;
+    int j, i;
 
-    for (i=0;i<6;i++) //muchas iteraciones, optimizable
+    for (i=0;i<6;i++)
     {
         j = 0;
         while(*(vec+j) != *(cifra+i))
-        {
             j++;
-        }
 
         *(cifra+i) = j;
     }
 
     registro -> periodo_codif.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
     registro -> periodo_codif.mes = *(cifra+4)*10 + *(cifra+5);
-
-
-    //a todo esto optimizarlo, replazar vectores con aritemtica de punteros
-    //ver si se pude remplazar el swicth con macros, validaciones etc etc...
-    //fijate como hace las funciones de este tipo el profe
-    //opciones->    retornar direccion (ambiguo)/ trabajar con la direccion y no retornar nada
 }
 
-void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
+void convertirFechaDecodificadaAString(DIVISION* reg)
 {
     //char stringFecha[17]; // 9 caracteres para el mes de nombre más largo ("septiembre"), 3 caracteres para la cadena " - ", 4 para el año y uno para el carácter de fin de línea
     char nombreMes[17];
@@ -65,7 +56,7 @@ void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
     char matMes[MESES][CANTMAXCHAR] = {{"Enero"},{"Febrero"},{"Marzo"},{"Abril"},{"Mayo"},{"Junio"},{"Julio"},
                                       {"Agosto"},{"Septiembre"},{"Octubre"},{"Noviembre"},{"Diciembre"}};
 
-    strcpy(nombreMes,matMes+(mes-1));
+    strcpy(nombreMes,*(matMes+(mes-1)));
 
 
     strcat(nombreMes, " - ");
@@ -74,3 +65,4 @@ void convertirFechaDecodificadaAString(DIVISION* reg) // Consigna 2
     strcat(nombreMes, anio_s);
     strcpy(reg->periodo_codif.periodo_letra,nombreMes);
 }
+
