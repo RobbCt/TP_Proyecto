@@ -2,6 +2,8 @@
 #define FUNCIONES_H_INCLUDED
 #include <string.h>
 #include <stdio.h>
+#include <ctype.h>
+
 
 
 typedef struct
@@ -24,9 +26,11 @@ typedef struct
 }DIVISION;
 
 //Primitivas
-void divisionDecodificarFecha(DIVISION*);
+void divisionDecodificarFecha(DIVISION*); //consigna 1
 
 void convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
+
+void normalizarDescr(DIVISION*); //consigna 3 y medio¿
 
 //primitivasn't
 

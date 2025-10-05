@@ -25,7 +25,7 @@ void divisionDecodificarFecha(DIVISION* registro)
     *(cifra)=(anio/1000)% 10;
     *(cifra+1)=(anio/100)% 10;
     *(cifra+2)=(anio/10)% 10;
-    *(cifra+3)=(anio/1)% 10;
+    *(cifra+3)= anio% 10;
 
     *(cifra+4)=(mes/10)% 10;
     *(cifra+5)= mes% 10;
@@ -66,3 +66,14 @@ void convertirFechaDecodificadaAString(DIVISION* reg)
     strcpy(reg->periodo_codif.periodo_letra,nombreMes);
 }
 
+void normalizarDescr(DIVISION* reg)
+{
+    char desc[31];
+    strcpy(desc, reg->descrip);
+    int i;
+    desc[0]=toupper(desc[0]); //esto por si la primera letra no es mayus
+    for(i=1;i<31 && desc[i]!='\0';i++)
+        desc[i]=tolower(desc[i]);
+
+    strcpy(reg->descrip, desc);
+}

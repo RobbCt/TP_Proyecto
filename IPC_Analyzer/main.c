@@ -38,6 +38,7 @@ int main()
     for(i = 0;i<TAM;i++)
     {
         convertirFechaDecodificadaAString(reg+i);
+        normalizarDescr(reg+i);
     }
 
     imprimirRegistros(reg);
