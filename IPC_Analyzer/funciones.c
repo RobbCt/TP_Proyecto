@@ -68,12 +68,15 @@ void convertirFechaDecodificadaAString(DIVISION* reg)
 
 void normalizarDescr(DIVISION* reg)
 {
-    char desc[31];
-    strcpy(desc, reg->descrip);
-    int i;
-    desc[0]=toupper(desc[0]); //esto por si la primera letra no es mayus
-    for(i=1;i<31 && desc[i]!='\0';i++)
-        desc[i]=tolower(desc[i]);
+    char* i= reg->descrip;
 
-    strcpy(reg->descrip, desc);
+    *i=toupper(*i);//esto por si la primera letra no es mayus
+
+    i++;
+
+    while(*i!='\0')
+    {
+        *i=tolower(*i);
+        i++;
+    }
 }
