@@ -32,7 +32,7 @@ void convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
 
 void normalizarDescr(DIVISION*); //consigna 3 y medio¿
 
-void filtroRegClaf(DIVISION*);//necesaria??? parte de consigna 3
+void filtroRegClaf(DIVISION*, char*, char*);//necesaria??? parte de consigna 3
 
 void conversionIndice(DIVISION*);//consigna 4
 

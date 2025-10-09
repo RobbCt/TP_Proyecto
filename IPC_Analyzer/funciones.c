@@ -83,25 +83,13 @@ void normalizarDescr(DIVISION* reg)
     }
 }
 
-void filtroRegClaf(DIVISION* reg) //necesaria??? parte del item 3
+void filtroRegClaf(DIVISION* reg, char* desc, char *regi) //parte del item 3
 {
-    int i;
-
-    char desc[]="COICOP", regi[]="GBA";
-
-    printf("\n\n\n\n%20s %30s %30s %13s %9s %11s %11s %8s",
-           "CODIGO","DESCRIPCION","CLASIFICADOR",
-           "INDICE_IPC","V_M_IPC","V_I_A_IPC","REGION","PERIODO");
-
-    for(i=0;i<TAM;i++)
-    {
-        if(strcmpi(reg->clasif, desc)==0 && strcmpi(reg->region, regi)==0)
+    //char desc[]="COICOP", regi[]="GBA";
+    if(strcmpi(reg->clasif, desc)==0 && strcmpi(reg->region, regi)==0)
             printf("\n\n%20s %30s %30s %8.2lf %5.2lf %7.2lf      %9s %4d%2d %s",reg->cod,
                reg->descrip,reg->clasif,reg->ind_ipc,reg->v_m_ipc,reg->v_i_a_ipc,
                reg->region,reg->periodo_codif.anio,reg->periodo_codif.mes,reg->periodo_codif.periodo_letra);
-
-        reg++;
-    }
 }
 
 void conversionIndice(DIVISION* reg)
@@ -124,5 +112,18 @@ void conversionIndice(DIVISION* reg)
     Acepto críticas
 
     atte: dai
+    */
+
+
+    /*
+        antes de nada, vamos a abrir el csv, a cada registro lo vamos a cargar por
+        campos, cuando estemos en el campo
+        indice_ipc, a ese string de ese campo le cambiamos la coma por el punto, con
+        la funcion strrchr y
+
+        este # cambiado lo tendremos q sobreescribir, asi con todos los #
+
+        sscanf para el punto 5,
+
     */
 }

@@ -35,15 +35,17 @@ int main()
 
     imprimirRegistros(reg);
 
+    printf("\n\n\n\n%20s %30s %30s %13s %9s %11s %11s %8s",
+           "CODIGO","DESCRIPCION","CLASIFICADOR",
+           "INDICE_IPC","V_M_IPC","V_I_A_IPC","REGION","PERIODO");
     for(i = 0;i<TAM;i++)
     {
         convertirFechaDecodificadaAString(reg+i);
         normalizarDescr(reg+i);
+         filtroRegClaf(reg+i,"COICOP", "GBA");
     }
 
-    imprimirRegistros(reg);
-
-    filtroRegClaf(reg);
+   // imprimirRegistros(reg);
 
     return 0;
 }
