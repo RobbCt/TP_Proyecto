@@ -14,7 +14,7 @@ int main()
 {
     int i;
     DIVISION reg[TAM] ={
-    {"023", "NIVEL GENERAL", "Nivel general", 150.0, 16.0, 18.5, "GBA",{9741,49,""}},
+    {"023", "NIVEL GENERAL", "Nivel general", 150.01, 16.0, 18.5, "GBA",{9741,49,""}},
     {"045", "NIVEL GENERAL", "Nivel general y divisiones", 100.5, 90.0, 0.1, "Nacional",{9741,49}},
     {"x23", "bebidas alcohólicas", "Nivel general y COICOP", 140, 0.1, 10.0, "Pampeana",{9741,49}},
     {"11", "Bebidas y tabaco", "COICOP", 11, 500, 70, "Noroeste",{9741,49}},
@@ -43,7 +43,7 @@ int main()
 
     imprimirRegistros(reg);
 
-
+    filtroRegClaf(reg);
 
     return 0;
 }
