@@ -33,14 +33,17 @@
 	<windows.h>
 	"funciones.h"
 
-1758911725 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
+1760095665 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
+	<stdlib.h>
 	"funciones.h"
 
-1758905147 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
+1760095660 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
 	<string.h>
 	<stdio.h>
+	<ctype.h>
+	<stdbool.h>
 
-1758906199 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
+1760095660 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

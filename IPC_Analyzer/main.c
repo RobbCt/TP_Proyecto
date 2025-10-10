@@ -1,17 +1,28 @@
+//biblio standar
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+
+//biblio
 #include "funciones.h"
 
-#define TAM 10
+//define's
+#define TAM 10 //temporal
+
+
 
 void imprimirRegistros(DIVISION*);
 
 
 int main()
 {
+    divisionParsearCampo();
+    system("pause");
+
+
+
     int i;
     DIVISION reg[TAM] ={
     {"023", "NIVEL GENERAL", "Nivel general", 150.01, 16.0, 18.5, "GBA",{9741,49,""}},
@@ -42,10 +53,8 @@ int main()
     {
         convertirFechaDecodificadaAString(reg+i);
         normalizarDescr(reg+i);
-         filtroRegClaf(reg+i,"COICOP", "GBA");
+        filtroRegClaf(reg+i,"COICOP", "GBA");
     }
-
-   // imprimirRegistros(reg);
 
     return 0;
 }
@@ -62,7 +71,7 @@ void imprimirRegistros(DIVISION* reg)
     {
         printf("\n\n%20s %30s %30s %8.2lf %5.2lf %7.2lf      %9s %4d%2d %s",reg->cod,
                reg->descrip,reg->clasif,reg->ind_ipc,reg->v_m_ipc,reg->v_i_a_ipc,
-               reg->region,reg->periodo_codif.anio,reg->periodo_codif.mes,reg->periodo_codif.periodo_letra);
+               reg->region,reg->periodo_codif.anio,reg->periodo_codif.mes,reg->periodo_codif.periodo);
 
         reg++;
     }
