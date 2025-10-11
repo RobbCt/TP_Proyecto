@@ -10,7 +10,9 @@
 #define TAM 10 //temporal
 
 
-void comaApunto(char*);
+void comaApunto(char*, int); //un parametro mas para generalizarla y reutilizarla dea
+
+void reemplazoNAx0(char*, int);//para futuros calculos y previo al parseo
 
 
 void divisionDecodificarFecha(DIVISION* registro)//P1
@@ -148,16 +150,18 @@ void divisionParsearCampo()//P4 propuesto por robbi
 
     fgets(registro,MAXTAMREG,archTxt); //saltar encabezados
 
-    while(fgets(registro,MAXTAMREG,archTxt)) //fgets siempre trae unn registro a variable con \0 al final
+    while(fgets(registro,MAXTAMREG,archTxt)) //fgets siempre trae un registro a variable con \0 al final
     {
         printf("\n\nantes ---------------------------------");
         printf("\n%s",registro);
 
+        comaApunto(registro, 4);
+        comaApunto(registro, 5); //de paso cambiamos las comas de otros campos de decimales
 
-        comaApunto(registro);
+        reemplazoNAx0(registro, 5);
+        reemplazoNAx0(registro, 6);
 
-
-        printf("despues +++++++++++++++++++++++++++++++");
+        printf("despues +++++++++++++++++++++++++++++++"); //valido lo del ultimo reg, 5mentarios
         printf("\n%s\n\n",registro);
 
         /*
@@ -166,7 +170,7 @@ void divisionParsearCampo()//P4 propuesto por robbi
         completo (aun no, para no malograr el arch pq hay q revisar
         si todas las funciones se bancan el archivo
 
-        fseek(archTxt, -sizeof(registro), SEEK_SET);
+        fseek(archTxt, -sizeof(registro), SEEK_SET); //SEEK_CUR***
         fprintf(archTxt, "%s\n", registro);
         fflush(arch);
         */
@@ -175,21 +179,20 @@ void divisionParsearCampo()//P4 propuesto por robbi
     fclose(archTxt);
 }
 
-void comaApunto(char *pInf)//P4 propuesto por robbi
+void comaApunto(char *pInf, int lac)//P4 propuesto por robbi
 {
     //nos desplazamos en el str registro por los separadores
-    //pInf(inferior), pSup(superior)
+    //pInf(inferior/inicio del campo), pSup(superior/fin del campo)
     char *pSup,
          *finReg = strchr(pInf,'\n');
     int numCampo;
-
 
     //archivo sin \n (solo \0) en el ultimo registro -> registro valido
     if(finReg != NULL)
         *finReg = '\0';
 
     //indice_IPC campo nro 4
-    for(numCampo = 1 ; numCampo < 4 ; numCampo++)
+    for(numCampo = 1 ; numCampo < lac ; numCampo++)
         pInf = strchr(pInf + numCampo,';'); //pInf en el separador antes del campo clave
 
     pSup = strchr(pInf+1,';'); //pInf en el separador despues del campo clave
@@ -200,4 +203,25 @@ void comaApunto(char *pInf)//P4 propuesto por robbi
 
     if(pInf != pSup)
         *pInf = '.';
+}
+
+void reemplazoNAx0(char* pInf, int lac) //lac: lugar a cambiar (campo pero cac queda feo ahr)
+{
+    char *pSup, *finReg = strchr(pInf, '\n');
+    int numCampo;
+
+    if (finReg != NULL)
+        *finReg = '\0';
+
+    for (numCampo = 1; numCampo < lac; numCampo++)
+        pInf = strchr(pInf + 1, ';');
+
+    pSup = strchr(pInf+1, ';');
+
+        // fin - inicio = ce¿
+    if ((pSup-(pInf+1) == 2) && *(pInf+1) == 'N' && *(pInf+2) == 'A')
+    {
+        *(pInf+1) = '0';
+        *(pInf+2)=*(pInf+1);
+    }
 }

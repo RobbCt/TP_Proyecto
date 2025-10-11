@@ -11,17 +11,12 @@
 //define's
 #define TAM 10 //temporal
 
-
-
 void imprimirRegistros(DIVISION*);
-
 
 int main()
 {
     divisionParsearCampo();
     system("pause");
-
-
 
     int i;
     DIVISION reg[TAM] ={
