@@ -13,9 +13,18 @@
 
 void imprimirRegistros(DIVISION*);
 
+void mostrarBin(FILE*);
+
 int main()
 {
     divisionParsearCampo();
+    system("pause");
+
+    puts("archivo bin generado:");
+    FILE* pf=fopen("../Data/divisionesss.dat", "rb");
+    mostrarBin(pf);
+    fclose(pf);
+
     system("pause");
 
     int i;
@@ -73,7 +82,26 @@ void imprimirRegistros(DIVISION* reg)
 }
 //si hago %4d%2d para la fecha, podria separar los digitos en 2 campos diferentes o una variable de tipo estructura anidada
 
+void mostrarBin(FILE* pf)
+{
+    DIVISION reg;
+    int i = 1;
 
+    puts("------------------------------------------------------------\n");
+    while (fread(&reg, sizeof(DIVISION), 1, pf) == 1) {
+        printf("Registro %d:\n", i++);
+        printf("  Codigo: %s\n", reg.cod);
+        printf("  Descripcion: %s\n", reg.descrip);
+        printf("  Clasificacion: %s\n", reg.clasif);
+        printf("  ind_ipc: %.2f\n", reg.ind_ipc);
+        printf("  v_m_ipc: %.2f\n", reg.v_m_ipc);
+        printf("  v_i_a_ipc: %.2f\n", reg.v_i_a_ipc);
+        printf("  Region: %s\n", reg.region);
+        printf("  Fecha: %s\n", reg.periodo_codif.periodo);
+        printf("  Fecha (anio - mes ): %d - %d\n", reg.periodo_codif.anio, reg.periodo_codif.mes);
+        puts("------------------------------------------------------------\n");
+    }
+}
 
 
 

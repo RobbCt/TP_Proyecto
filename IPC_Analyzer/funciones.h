@@ -20,12 +20,12 @@ typedef struct
 typedef struct
 {
     char cod[21];
-    char descrip[31];
-    char clasif[31];
+    char descrip[81];
+    char clasif[51];
     double ind_ipc;
     double v_m_ipc;
     double v_i_a_ipc;
-    char region[10];
+    char region[30];
     FECHA periodo_codif; //asi tenemos separada la fecha(capaz lo necesitemos mas adelante)
 }DIVISION;
 
@@ -42,6 +42,7 @@ void conversionIndice(DIVISION*);//consigna 4
 
 void divisionParsearCampo();//consigna 4 propuesto por robbi
 
+void parsearRegistro(DIVISION*, char*); //creamos nuestro hermoso .bin
 
 //primitivasn't
 

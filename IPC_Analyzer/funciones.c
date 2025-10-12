@@ -15,17 +15,19 @@ void comaApunto(char*, int); //un parametro mas para generalizarla y reutilizarl
 void reemplazoNAx0(char*, int);//para futuros calculos y previo al parseo
 
 
+
+
 void divisionDecodificarFecha(DIVISION* registro)//P1
 {
-    /*Para el dígito 7 corresponde un 0
-      Para el dígito 4 corresponde un 1
-      Para el dígito 9 corresponde un 2
-      Para el dígito 8 corresponde un 3
-      Para el dígito 0 corresponde un 4
-      Para el dígito 6 corresponde un 5
-      Para el dígito 1 corresponde un 6
-      Para el dígito 3 corresponde un 7
-      Para el dígito 2 corresponde un 8*/
+    /*Para el dï¿½gito 7 corresponde un 0
+      Para el dï¿½gito 4 corresponde un 1
+      Para el dï¿½gito 9 corresponde un 2
+      Para el dï¿½gito 8 corresponde un 3
+      Para el dï¿½gito 0 corresponde un 4
+      Para el dï¿½gito 6 corresponde un 5
+      Para el dï¿½gito 1 corresponde un 6
+      Para el dï¿½gito 3 corresponde un 7
+      Para el dï¿½gito 2 corresponde un 8*/
 
     int anio = registro -> periodo_codif.anio,
         mes = registro -> periodo_codif.mes,
@@ -114,10 +116,10 @@ void conversionIndice(DIVISION* reg)
 
     como tendriamos el nro descompuesto, podemos parsearlo a string,
     concatenarlos directamente con un punto (lo que pide la consigna),
-    luego volverlo a parsearlo como double y guardarlo en nro_completo para despues printear eso¿
+    luego volverlo a parsearlo como double y guardarlo en nro_completo para despues printear esoï¿½
 
-    En mi cabeza funca, les dejo la función del planteo antes de olvidarla
-    Acepto críticas
+    En mi cabeza funca, les dejo la funciï¿½n del planteo antes de olvidarla
+    Acepto crï¿½ticas
 
     atte: dai
     */
@@ -139,6 +141,9 @@ void conversionIndice(DIVISION* reg)
 void divisionParsearCampo()//P4 propuesto por robbi
 {
     FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","r+t");
+
+    FILE *archBin = fopen("../Data/divisionesss.dat", "wb"); //nuevo arch bin
+
     char registro[MAXTAMREG];
 
 
@@ -148,7 +153,7 @@ void divisionParsearCampo()//P4 propuesto por robbi
         exit(1);
     }
 
-    fgets(registro,MAXTAMREG,archTxt); //saltar encabezados
+    fgets(registro,MAXTAMREG,archTxt); //saltar encabezado
 
     while(fgets(registro,MAXTAMREG,archTxt)) //fgets siempre trae un registro a variable con \0 al final
     {
@@ -164,7 +169,7 @@ void divisionParsearCampo()//P4 propuesto por robbi
         printf("despues +++++++++++++++++++++++++++++++"); //valido lo del ultimo reg, 5mentarios
         printf("\n%s\n\n",registro);
 
-        /*
+        /* comment ya debatidoÂ¿
         despues de tener la variable registro parseada, puedo
         sobreescribirla en la misma iteracion, parseando el arch
         completo (aun no, para no malograr el arch pq hay q revisar
@@ -174,8 +179,22 @@ void divisionParsearCampo()//P4 propuesto por robbi
         fprintf(archTxt, "%s\n", registro);
         fflush(arch);
         */
+
+        /*idea principal:
+            a medida que va reemplazando la coma a punto, y NA a cero,
+            vamos parseando y guardando como estructura dentro de un .bin
+            paralelo al csv, asi despuÃ©s trabajamos solo en ese archivo.
+            y, si la situaciÃ³n lo amerita en algun futuro, convertimos
+            ese bin a csv y listo, sino nel
+        */
+        DIVISION regB;
+
+        parsearRegistro(&regB, registro);
+
+        fwrite(&regB, sizeof(DIVISION), 1, archBin); //vamos guardando en nuestro nuevo archivito
     }
 
+    fclose(archBin);
     fclose(archTxt);
 }
 
@@ -218,10 +237,82 @@ void reemplazoNAx0(char* pInf, int lac) //lac: lugar a cambiar (campo pero cac q
 
     pSup = strchr(pInf+1, ';');
 
-        // fin - inicio = ce¿
+        // fin - inicio = ceï¿½
     if ((pSup-(pInf+1) == 2) && *(pInf+1) == 'N' && *(pInf+2) == 'A')
     {
         *(pInf+1) = '0';
         *(pInf+2)=*(pInf+1);
     }
+}
+
+void parsearRegistro(DIVISION *rbin, char *regi)
+{
+    char *pf;
+    int aux;
+
+    pf = strrchr(regi, ';');
+    if (pf != NULL) //fecha
+    {                                      //pf+2 para quitar las comillas iniciales
+        strncpy(rbin->periodo_codif.periodo, pf + 2,sizeof(rbin->periodo_codif.periodo) - 1);
+        rbin->periodo_codif.periodo[sizeof(rbin->periodo_codif.periodo)-11]= '\0';
+                                                            //-11: hardcodeo pa quitar  las comillas finales
+        //atoi = string to int (string a pasar)
+        aux = atoi(rbin->periodo_codif.periodo); //aux=9283 93 (ej)
+        rbin->periodo_codif.anio= aux/100; // anio= 9283
+        rbin->periodo_codif.mes= aux%100; // anio= 93
+
+        *pf='\0';
+    }
+
+    pf= strrchr(regi, ';');
+    if(pf!= NULL) //region
+    {
+        strncpy(rbin->region, pf+1, sizeof(rbin->region) - 1);
+        rbin->region[sizeof(rbin->region)-1]= '\0';
+        *pf='\0';
+    }
+
+    pf= strrchr(regi, ';');
+    if(pf!=NULL)
+    {                   //strtod: string to double (string, NULL)
+        rbin->v_i_a_ipc = strtod(pf+1, NULL);
+        *pf='\0';
+    }
+
+    pf= strrchr(regi, ';');
+    if(pf!=NULL)
+    {                   //strtod: string to double (string, NULL)
+        rbin->v_m_ipc = strtod(pf+1, NULL);
+        *pf='\0';
+    }
+
+    pf= strrchr(regi, ';');
+    if(pf!=NULL)
+    {                   //strtod: string to double (string, NULL)
+        rbin->ind_ipc = strtod(pf+1, NULL);
+        *pf='\0';
+    }
+
+    pf= strrchr(regi, ';');
+    if(pf!=NULL) //clasificacion
+    {
+        strncpy(rbin->clasif, pf+1, sizeof(rbin->clasif) - 1);
+        rbin->clasif[sizeof(rbin->clasif)-1]= '\0';
+        *pf='\0';
+    }
+
+    pf= strrchr(regi, ';');
+    if(pf!=NULL) //descripcion
+    {
+        strncpy(rbin->descrip, pf+1, sizeof(rbin->descrip) - 1);
+        rbin->descrip[sizeof(rbin->descrip)-1]= '\0';
+        *pf='\0';
+    }
+
+    //ya llego al inicio del regi pal cod
+    strncpy(rbin->cod, regi, sizeof(rbin->cod) - 1);
+    rbin->cod[sizeof(rbin->cod)-1]= '\0';
+
+
+    puts("cargao");
 }
