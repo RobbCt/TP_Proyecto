@@ -30,11 +30,11 @@ typedef struct
 }DIVISION;
 
 //Primitivas
-void divisionDecodificarFecha(DIVISION*); //consigna 1
+int divisionDecodificarFecha(char *,DIVISION*); //consigna 1
 
-void convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
+int convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
 
-void normalizarDescr(DIVISION*); //consigna 3
+int normalizarDescr(char *,DIVISION*); //consigna 3
 
 void filtroRegClaf(DIVISION*, char*, char*); //consigna 3
 
@@ -42,8 +42,10 @@ void conversionIndice(DIVISION*); //consigna 4
 
 void divisionParseReg(); //consigna 4 propuesto por robbi
 
+int divisionesArchTextABin();
+
 //primitivasn't
 
-void regTextABin(DIVISION*, char*); //creamos nuestro hermoso .bin
+int regTextABin(DIVISION*, char*); //creamos nuestro hermoso .bin
 
 #endif // FUNCIONES_H_INCLUDED

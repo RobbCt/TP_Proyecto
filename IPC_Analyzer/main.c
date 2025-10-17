@@ -13,21 +13,17 @@
 
 void imprimirRegistros(DIVISION*);
 
-void mostrarBin(FILE*);
+void mostrarBin();
 
 int main()
 {
-    divisionParseReg();
+    //divisionParseReg();
+
+    divisionesArchTextABin();
     system("pause");
 
-    puts("archivo bin generado:");
-    FILE* pf=fopen("../Data/divisionesss.dat", "rb");
-    mostrarBin(pf);
-    fclose(pf);
 
-    system("pause");
-
-    int i;
+    /*int i;
     DIVISION reg[TAM] ={
     {"023", "NIVEL GENERAL", "Nivel general", 150.01, 16.0, 18.5, "GBA",{9741,49,""}},
     {"045", "NIVEL GENERAL", "Nivel general y divisiones", 100.5, 90.0, 0.1, "Nacional",{9741,49}},
@@ -58,7 +54,7 @@ int main()
         convertirFechaDecodificadaAString(reg+i);
         normalizarDescr(reg+i);
         filtroRegClaf(reg+i,"COICOP", "GBA");
-    }
+    }*/
 
     return 0;
 }
@@ -82,10 +78,11 @@ void imprimirRegistros(DIVISION* reg)
 }
 //si hago %4d%2d para la fecha, podria separar los digitos en 2 campos diferentes o una variable de tipo estructura anidada
 
-void mostrarBin(FILE* pf)
+void mostrarBin()
 {
+    FILE* pf = fopen("../Data/serie_ipc_divisiones(test).dat", "rb");
     DIVISION reg;
-    int i = 1;
+    int i = 0;
 
     puts("------------------------------------------------------------\n");
     while (fread(&reg, sizeof(DIVISION), 1, pf) == 1) {
@@ -101,6 +98,10 @@ void mostrarBin(FILE* pf)
         printf("  Fecha (anio - mes ): %d - %d\n", reg.periodo_codif.anio, reg.periodo_codif.mes);
         puts("------------------------------------------------------------\n");
     }
+
+
+    fclose(pf);
+    system("pause");
 }
 
 
