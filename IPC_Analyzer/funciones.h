@@ -36,15 +36,14 @@ void convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
 
 void normalizarDescr(DIVISION*); //consigna 3
 
-void filtroRegClaf(DIVISION*, char*, char*);//consigna 3
+void filtroRegClaf(DIVISION*, char*, char*); //consigna 3
 
-void conversionIndice(DIVISION*);//consigna 4
+void conversionIndice(DIVISION*); //consigna 4
 
-void divisionParsearCampo();//consigna 4 propuesto por robbi
-
-void parsearRegistro(DIVISION*, char*); //creamos nuestro hermoso .bin
+void divisionParseReg(); //consigna 4 propuesto por robbi
 
 //primitivasn't
 
+void regTextABin(DIVISION*, char*); //creamos nuestro hermoso .bin
 
 #endif // FUNCIONES_H_INCLUDED

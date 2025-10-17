@@ -17,7 +17,7 @@ void mostrarBin(FILE*);
 
 int main()
 {
-    divisionParsearCampo();
+    divisionParseReg();
     system("pause");
 
     puts("archivo bin generado:");

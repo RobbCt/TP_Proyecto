@@ -8,13 +8,13 @@
 #define MESES 12
 #define CANTMAXCHAR 17
 #define TAM 10 //temporal
+#define TODO_OK 1
+#define TODO_MAL 0
 
 
 void comaApunto(char*, int); //un parametro mas para generalizarla y reutilizarla dea
 
 void reemplazoNAx0(char*, int);//para futuros calculos y previo al parseo
-
-
 
 
 void divisionDecodificarFecha(DIVISION* registro)//P1
@@ -138,11 +138,11 @@ void conversionIndice(DIVISION* reg)
     */
 }
 
-void divisionParsearCampo()//P4 propuesto por robbi
+void divisionParseReg()//P4
 {
     FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","r+t");
 
-    FILE *archBin = fopen("../Data/divisionesss.dat", "wb"); //nuevo arch bin
+    FILE *archBin = fopen("../Data/serie_ipc_divisiones(test).dat", "wb"); //nuevo arch bin
 
     char registro[MAXTAMREG];
 
@@ -160,13 +160,13 @@ void divisionParsearCampo()//P4 propuesto por robbi
         printf("\n\nantes ---------------------------------");
         printf("\n%s",registro);
 
-        comaApunto(registro, 4);
-        comaApunto(registro, 5); //de paso cambiamos las comas de otros campos de decimales
+        comaApunto(registro, 4); //sabiendo la estructura y como estan divididos
+        comaApunto(registro, 5); //
 
-        reemplazoNAx0(registro, 5);
-        reemplazoNAx0(registro, 6);
+        reemplazoNAx0(registro, 5); //sabiendo la estructura y como estan divididos
+        reemplazoNAx0(registro, 6); //
 
-        printf("despues +++++++++++++++++++++++++++++++"); //valido lo del ultimo reg, 5mentarios
+        printf("despues +++++++++++++++++++++++++++++++"); //valido lo del ultimo reg
         printf("\n%s\n\n",registro);
 
         /* comment ya debatido¿
@@ -189,7 +189,7 @@ void divisionParsearCampo()//P4 propuesto por robbi
         */
         DIVISION regB;
 
-        parsearRegistro(&regB, registro);
+        regTextABin(&regB, registro);
 
         fwrite(&regB, sizeof(DIVISION), 1, archBin); //vamos guardando en nuestro nuevo archivito
     }
@@ -198,7 +198,7 @@ void divisionParsearCampo()//P4 propuesto por robbi
     fclose(archTxt);
 }
 
-void comaApunto(char *pInf, int lac)//P4 propuesto por robbi
+void comaApunto(char *pInf, int lac)
 {
     //nos desplazamos en el str registro por los separadores
     //pInf(inferior/inicio del campo), pSup(superior/fin del campo)
@@ -245,74 +245,201 @@ void reemplazoNAx0(char* pInf, int lac) //lac: lugar a cambiar (campo pero cac q
     }
 }
 
-void parsearRegistro(DIVISION *rbin, char *regi)
+void regTextABin(DIVISION *regB, char *regT)
 {
     char *pf;
     int aux;
 
-    pf = strrchr(regi, ';');
+    pf = strrchr(regT, ';');
     if (pf != NULL) //fecha
     {                                      //pf+2 para quitar las comillas iniciales
-        strncpy(rbin->periodo_codif.periodo, pf + 2,sizeof(rbin->periodo_codif.periodo) - 1);
-        rbin->periodo_codif.periodo[sizeof(rbin->periodo_codif.periodo)-11]= '\0';
+        strncpy(regB->periodo_codif.periodo, pf + 2,sizeof(regB->periodo_codif.periodo) - 1);
+        regB->periodo_codif.periodo[sizeof(regB->periodo_codif.periodo)-11]= '\0';
                                                             //-11: hardcodeo pa quitar  las comillas finales
-        //atoi = string to int (string a pasar)
-        aux = atoi(rbin->periodo_codif.periodo); //aux=9283 93 (ej)
-        rbin->periodo_codif.anio= aux/100; // anio= 9283
-        rbin->periodo_codif.mes= aux%100; // anio= 93
+        //atoi = string to int (string a pasar)!!!!!!!!!!!! ASCII to Integer
+        aux = atoi(regB->periodo_codif.periodo); //aux=9283 93 (ej)
+        regB->periodo_codif.anio= aux/100; // anio= 9283
+        regB->periodo_codif.mes= aux%100; // anio= 93
 
         *pf='\0';
     }
 
-    pf= strrchr(regi, ';');
+    pf= strrchr(regT, ';');
     if(pf!= NULL) //region
     {
-        strncpy(rbin->region, pf+1, sizeof(rbin->region) - 1);
-        rbin->region[sizeof(rbin->region)-1]= '\0';
+        strncpy(regB->region, pf+1, sizeof(regB->region) - 1);
+        regB->region[sizeof(regB->region)-1]= '\0';
         *pf='\0';
     }
 
-    pf= strrchr(regi, ';');
+    pf= strrchr(regT, ';');
     if(pf!=NULL)
     {                   //strtod: string to double (string, NULL)
-        rbin->v_i_a_ipc = strtod(pf+1, NULL);
+        regB->v_i_a_ipc = strtod(pf+1, NULL);
         *pf='\0';
     }
 
-    pf= strrchr(regi, ';');
+    pf= strrchr(regT, ';');
     if(pf!=NULL)
     {                   //strtod: string to double (string, NULL)
-        rbin->v_m_ipc = strtod(pf+1, NULL);
+        regB->v_m_ipc = strtod(pf+1, NULL);
         *pf='\0';
     }
 
-    pf= strrchr(regi, ';');
+    pf= strrchr(regT, ';');
     if(pf!=NULL)
     {                   //strtod: string to double (string, NULL)
-        rbin->ind_ipc = strtod(pf+1, NULL);
+        regB->ind_ipc = strtod(pf+1, NULL);
         *pf='\0';
     }
 
-    pf= strrchr(regi, ';');
+    pf= strrchr(regT, ';');
     if(pf!=NULL) //clasificacion
     {
-        strncpy(rbin->clasif, pf+1, sizeof(rbin->clasif) - 1);
-        rbin->clasif[sizeof(rbin->clasif)-1]= '\0';
+        strncpy(regB->clasif, pf+1, sizeof(regB->clasif) - 1);
+        regB->clasif[sizeof(regB->clasif)-1]= '\0';
         *pf='\0';
     }
 
-    pf= strrchr(regi, ';');
+    pf= strrchr(regT, ';');
     if(pf!=NULL) //descripcion
     {
-        strncpy(rbin->descrip, pf+1, sizeof(rbin->descrip) - 1);
-        rbin->descrip[sizeof(rbin->descrip)-1]= '\0';
+        strncpy(regB->descrip, pf+1, sizeof(regB->descrip) - 1);
+        regB->descrip[sizeof(regB->descrip)-1]= '\0';
         *pf='\0';
     }
 
-    //ya llego al inicio del regi pal cod
-    strncpy(rbin->cod, regi, sizeof(rbin->cod) - 1);
-    rbin->cod[sizeof(rbin->cod)-1]= '\0';
+    //ya llego al inicio del regT pal cod
+    strncpy(regB->cod, regT, sizeof(regB->cod) - 1);
+    regB->cod[sizeof(regB->cod)-1]= '\0';
 
 
     puts("cargao");
 }
+
+void divisionesArchTextABin()
+{
+    FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
+    FILE *archBin = fopen("../Data/serie_ipc_divisiones(test).dat","wb"); //nuevo arch bin
+
+    if(!archTxt)
+    {
+        puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
+        exit(1);
+    }
+
+    if(!archBin)
+    {
+        puts("No se pudo crear el archivo (.bin): serie_ipc_divisiones(test)");
+        fclose(archTxt);
+        exit(1);
+    }
+
+    char regT[MAXTAMREG];
+
+    fgets(regT,MAXTAMREG,archTxt); //saltar encabezado
+
+    while(fgets(regT,MAXTAMREG,archTxt))
+    {
+        DIVISION regB;
+
+        regTextABin(&regB,regT);
+
+        fwrite(&regB, sizeof(DIVISION), 1, archBin);
+    }
+
+    fclose(archBin);
+    fclose(archTxt);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int regTextABin#V2(DIVISION *regB, char *regT)
+{
+    char *pIniCamp, *pAux;
+
+    pIniCamp = dirComillas(regT);
+    pAux = strrchr(pIniCamp,'"');
+
+    if (pIniCamp == NULL) //fecha
+        return TODO_MAL;
+
+
+    if (pAux == NULL)
+        return TODO_MAL;
+
+    *pAux = '\0';
+
+    divisionDecodificarFechaV2(pIniCamp,regB);
+
+
+
+
+
+    /////no
+    strncpy(regB->periodo_codif.periodo, );
+
+
+    aux = atoi(regB->periodo_codif.periodo); //aux=9283 93 (ej)
+    regB->periodo_codif.anio= aux/100; // anio= 9283
+    regB->periodo_codif.mes= aux%100; // anio= 93
+
+    /////no
+
+    *pIniCamp='\0';
+
+
+
+    pIniCamp = dirComillas(pIniCamp);
+    if (pIniCamp == NULL) //region
+        //return TODO MAL
+
+    strncpy(regB->region, pIniCamp, sizeof(DIVISION.region) - 1);
+    regB->region[sizeof(regB->region)-1]= '\0';
+    *pIniCamp='\0';
+
+
+    // y asi ...
+
+
+
+
+
+
+
+
+}
+*char dirComillas(char *TrozoRegT)
+{
+    pIniCamp = strrchr(TrozoRegT,';');
+
+    if(pIniCamp == NULL)
+        return NULL;
+
+    return strchr(pIniCamp,'"') + 1;
+}
+
+void divisionDecodificarFecha#V2(char* fechaStr, DIVISION* regB)
+{
+    int vecCor[9] = {7,4,9,8,0,6,1,3,2};
+    int cifra[6];
+    int indCifra, indCor;
+
+    // Convertir cada carácter del string a dígito numérico
+    for (indCifra = 0; indCifra < 6; indCifra++)
+        *(cifra+indCifra) = *(fechaStr+indCifra) - '0';  // Convertir char a int (diferencia en ASCII)
+
+    // Algoritmo de decodificación
+    for (indCifra = 0; indCifra < 6; indCifra++)
+        {
+
+        indCor = 0;
+        while(*(vecCor + indCor) != *(cifra + indCifra))
+            indCor++;
+
+        *(cifra + indCifra) = indCor;
+    }
+
+    // Guardar fecha decodificada en la estructura
+    regB -> periodo_codif.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
+    regB -> periodo_codif.mes = *(cifra+4)*10 + *(cifra+5);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
