@@ -60,3 +60,58 @@
 	<ctype.h>
 	<stdbool.h>
 
+1760750400 source:c:\users\alexi\desktop\tp_proyecto-main\tp_proyecto-main\ipc_analyzer\funciones.c
+	<stdlib.h>
+	<stdio.h>
+	"funciones.h"
+
+1760735588 c:\users\alexi\desktop\tp_proyecto-main\tp_proyecto-main\ipc_analyzer\funciones.h
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+	<stdbool.h>
+
+1760735588 source:c:\users\alexi\desktop\tp_proyecto-main\tp_proyecto-main\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	"funciones.h"
+	<stdlib.h>
+	<windows.h>
+	"funciones.h"
+
+1760793441 source:c:\users\alexi\desktop\copiadatos\2\ipc_analyzer\funciones.c
+	<stdlib.h>
+	"funciones.h"
+
+1760735588 c:\users\alexi\desktop\copiadatos\2\ipc_analyzer\funciones.h
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+	<stdbool.h>
+
+1760793581 source:c:\users\alexi\desktop\copiadatos\2\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	"funciones.h"
+
+1760793442 source:c:\users\eva\desktop\proyectito\tp_proyecto\ipc_analyzer\funciones.c
+	<stdlib.h>
+	"funciones.h"
+
+1760735588 c:\users\eva\desktop\proyectito\tp_proyecto\ipc_analyzer\funciones.h
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+	<stdbool.h>
+
+1760793582 source:c:\users\eva\desktop\proyectito\tp_proyecto\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	"funciones.h"
+
