@@ -1,5 +1,6 @@
 //biblio standar
 #include <stdlib.h>
+//#include <string.h>
 
 //biblio
 #include "funciones.h"
@@ -11,7 +12,6 @@
 #define TODO_OK 1
 #define TODO_MAL 0
 
-
 int comaApunto(char*); //un parametro mas para generalizarla y reutilizarla dea
 char* dirUltComillas(char *);
 int setearString(char *,char *);
@@ -22,46 +22,21 @@ int ajustarMontoIPC(FILE*, double, int, FECHA, FECHA);
 int valInt(int,int);
 FECHA valFecha();
 
-int divisionesArchTextATxt() ///agregar encabezado
+int divisionesArchTextATxt(FILE* archTxt, FILE* archTxt2) ///agregar encabezado
 {
-    FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
-    FILE *archTxt2 = fopen("../Data/serie_ipc_divisiones2(test).csv","wt"); //nuevo arch bin
-
-    if(!archTxt)
-    {
-        puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
-        exit(1);
-    }
-
-    if(!archTxt2)
-    {
-        puts("No se pudo crear el archivo (.bin): serie_ipc_divisiones(test)");
-        fclose(archTxt);
-        exit(1);
-    }
-
     char regT[MAXTAMREG];
-
     fgets(regT,MAXTAMREG,archTxt); //saltar encabezado
 
     while(fgets(regT,MAXTAMREG,archTxt))
     {
         DIVISION regB;
-
         regTextABin(&regB,regT);
-
         fprintf(archTxt2, "%s;%s;%s;%.2lf;%.2lf;%.2lf;%s;%d;%d;%s\n", regB.cod, regB.descrip, regB.clasif, regB.ind_ipc, regB.v_m_ipc, regB.v_i_a_ipc, regB.region, regB.periodo_codif.anio, regB.periodo_codif.mes, regB.periodo_codif.periodo);
-
     }
 
-    fclose(archTxt2);
-    fclose(archTxt);
-
     puts("\nTODO_OK\n");
-
     return TODO_OK;
 }
-
 
 int regTextABin(DIVISION *regB, char *regT)
 {
@@ -126,7 +101,6 @@ int regTextABin(DIVISION *regB, char *regT)
          normalizarDescr(pIniCamp + 1, regB);
          *pIniCamp = '\0';
      }
-
 
      pFinCamp = strrchr(regT,';'); //codigo
      *(dirUltComillas(regT)) = '\0';
@@ -202,7 +176,6 @@ int convertirFechaDecodificadaAString(DIVISION* reg)//P2
 int setearString(char *cadena,char *campo)
 {
     strcpy(campo,cadena);
-
     return TODO_OK;
 }
 
@@ -269,12 +242,12 @@ int comaApunto(char *cadena)
     return TODO_OK;
 }
 
-int menu_ipc()
+int menu_ipc(FILE* pf)
 {
-    FILE* pf = fopen("../Data/serie_ipc_divisiones(test).csv", "rt");
+    rewind(pf);
     if(!pf) {
     puts("No se pudo abrir el archivo de datos IPC.");
-    exit(1);}
+    return TODO_MAL;}
 
     double monto;
     int region;
@@ -304,9 +277,9 @@ int menu_ipc()
             puts("Invalido, el periodoHasta no puede ser menor (o igual) a periodoDesde, reingrese.. ");
     }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
 
-    ajustarMontoIPC(pf, monto, region, desde, hasta);
+    if(!ajustarMontoIPC(pf, monto, region, desde, hasta))
+        return TODO_MAL;
 
-    fclose(pf);
     return TODO_OK;
 }
 
@@ -338,11 +311,27 @@ int ajustarMontoIPC(FILE *pf, double monto, int region, FECHA desde, FECHA hasta
     DIVISION reg;
     double ipcDesde = 0, ipcHasta = 0;
     char *regiones[] = {"Nacional", "GBA", "Pampeana", "Cuyo", "Noroeste", "Noreste", "Patagonia"};
+    char linea[512];
     FECHA fDesde, fHasta;
 
-    rewind(pf);
-    while(fread(&reg, sizeof(DIVISION), 1, pf) && (ipcDesde==0 && ipcHasta==0))
-    {   ///filtro de descr(por consigna)
+    while(fgets(linea, sizeof(linea), pf)) //&& (ipcDesde == 0 || ipcHasta == 0)) //por el momento funca sin esa cond, buscar optimizacion con casos de prueba
+    {   ///SOLUCION MOMENTANEA (hasta que un profe conteste(?)
+        /*re-parseamos to' nuestro .txt2 y la pasamos a un reg para filtrar y
+        trabajar de forma mas comodita*/
+        sscanf(linea, "%[^;];%[^;];%[^;];%lf;%lf;%lf;%[^;];%d;%d;%[^;]", reg.cod, reg.descrip, reg.clasif, &reg.ind_ipc, &reg.v_m_ipc, &reg.v_i_a_ipc, reg.region, &reg.periodo_codif.anio, &reg.periodo_codif.mes, reg.periodo_codif.periodo);
+        /*Desventajas de esto: lo hacemos solo dentro de esta funcion
+         pero volvemos a recorrer el .txt2 completo (o hasta que se encuentre los ipc's)
+         No estaría  taaaan mal si solo lo hicieramos acá por unica vez,
+         pero más adelante necesitaremos trabajar de nuevo con el .txt2,
+         de forma que tendríamos que volver a leerlo y parsearlo (nos quita eficiencia)
+
+         La solución que se me ocurre: dejar la materia y avanzar con el tp del cuatri que viene¿
+         Bueno no, pero leerlo una sola vez y almacenar solo los registros relevantes
+         en memoria (ej un array de structs) para no tener que reabrir en cada punto¿¿¿
+
+         */
+
+        ///filtro de descr(por consigna)
         if (strcmpi(reg.descrip, "Nivel general") == 0)
         {  //filtro region
             if(strcmpi(reg.region, regiones[region - 1]) == 0)
@@ -383,5 +372,4 @@ int ajustarMontoIPC(FILE *pf, double monto, int region, FECHA desde, FECHA hasta
 
     return TODO_OK;
 }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -46,9 +46,9 @@ void conversionIndice(DIVISION*); //consigna 4
 
 void divisionParseReg(); //consigna 4 propuesto por robbi
 
-int divisionesArchTextATxt();
+int divisionesArchTextATxt(FILE* archTxt, FILE* archTxt2);
 
-int menu_ipc(); //p5
+int menu_ipc(FILE*); //p5
 
 //primitivasn't
 

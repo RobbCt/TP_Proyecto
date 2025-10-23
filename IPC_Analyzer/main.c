@@ -13,42 +13,45 @@
 
 void imprimirRegistros(DIVISION*);
 
-void mostrarBin();
+void mostrarTxt(FILE* arch);
 
 int main()
 {
+    FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
+    FILE *archTxt2 = fopen("../Data/serie_ipc_divisiones2(test).csv","w+t"); //nuevo arch txt2.0
+    if(!archTxt){
+        puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
+        exit(1);
+    }
+    if(!archTxt2){
+        puts("No se pudo crear el archivo (.txt): serie_ipc_divisiones2(test)");
+        fclose(archTxt);
+        exit(1);
+    }
 
-    divisionesArchTextATxt();
+    divisionesArchTextATxt(archTxt, archTxt2);
 
-    mostrarBin();
+    mostrarTxt(archTxt2);
 
-    menu_ipc();
+    menu_ipc(archTxt2);
 
+    fclose(archTxt2);
+    fclose(archTxt);
     return 0;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void mostrarBin()
+void mostrarTxt(FILE* arch)
 {
-    FILE* pf = fopen("../Data/serie_ipc_divisiones(test).dat", "rb");
-    DIVISION reg;
-    int i = 0;
+    rewind(arch);
+
+    char linea[512];
+    int i = 1;
 
     puts("------------------------------------------------------------\n");
-    while (fread(&reg, sizeof(DIVISION), 1, pf) == 1) {
-        printf("Registro %d:\n", i++);
-        printf("  Codigo: %s\n", reg.cod);
-        printf("  Descripcion: %s\n", reg.descrip);
-        printf("  Clasificacion: %s\n", reg.clasif);
-        printf("  ind_ipc: %.2f\n", reg.ind_ipc);
-        printf("  v_m_ipc: %.2f\n", reg.v_m_ipc);
-        printf("  v_i_a_ipc: %.2f\n", reg.v_i_a_ipc);
-        printf("  Region: %s\n", reg.region);
-        printf("  Fecha: %s\n", reg.periodo_codif.periodo);
-        printf("  Fecha (anio - mes ): %d - %d\n", reg.periodo_codif.anio, reg.periodo_codif.mes);
-        puts("------------------------------------------------------------\n");
-    }
+    while (fgets(linea, sizeof(linea), arch))
+        printf("Linea %d: %s", i++, linea);
+    puts("------------------------------------------------------------\n");
 
-    fclose(pf);
     system("pause");
 }
 
