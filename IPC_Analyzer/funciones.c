@@ -271,27 +271,27 @@ int comaApunto(char *cadena)
 
 int menu_ipc()
 {
-    FILE* pf = fopen("../Data/serie_ipc_divisiones(test).dat", "rb");
+    FILE* pf = fopen("../Data/serie_ipc_divisiones(test).csv", "rt");
     if(!pf) {
     puts("No se pudo abrir el archivo de datos IPC.");
     exit(1);}
 
-    double maux;
-    int raux;
+    double monto;
+    int region;
     FECHA desde, hasta;
 
     puts("\n\n--MONTOS AJUSTADOS--\n");
     do{
         puts("Ingrese un monto expresado en pesos: ");
-        scanf("%lf", &maux);
-        if(maux<=0)
+        scanf("%lf", &monto);
+        if(monto<=0)
             puts("INVALIDO, monto fuera de rango, reintente. ");
-    }while(maux<=0);
+    }while(monto<=0);
 
     puts("\nSeleccione la region correspondiente:");
     puts("1 - Nacional\n2 - GBA\n3 - Pampeana\n4 - Cuyo\n5 - Noroeste\n6 - Noreste\n7 - Patagonia\n");
     puts("Opcion: ");
-    raux = valInt(1,7);
+    region = valInt(1,7);
 
     puts("\nIngrese Periodo Desde [formato dddd-mm]");
     desde = valFecha();
@@ -304,7 +304,7 @@ int menu_ipc()
             puts("Invalido, el periodoHasta no puede ser menor (o igual) a periodoDesde, reingrese.. ");
     }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
 
-    ajustarMontoIPC(pf, maux, raux, desde, hasta);
+    ajustarMontoIPC(pf, monto, region, desde, hasta);
 
     fclose(pf);
     return TODO_OK;
@@ -341,7 +341,7 @@ int ajustarMontoIPC(FILE *pf, double monto, int region, FECHA desde, FECHA hasta
     FECHA fDesde, fHasta;
 
     rewind(pf);
-    while(fread(&reg, sizeof(DIVISION), 1, pf))
+    while(fread(&reg, sizeof(DIVISION), 1, pf) && (ipcDesde==0 && ipcHasta==0))
     {   ///filtro de descr(por consigna)
         if (strcmpi(reg.descrip, "Nivel general") == 0)
         {  //filtro region

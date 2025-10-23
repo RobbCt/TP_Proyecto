@@ -4,46 +4,39 @@
 	<ActiveTarget name="Debug" />
 	<File name="funciones.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1044" topLine="43" />
-		</Cursor>
-	</File>
-	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="7" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="313" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="funciones.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1187" topLine="24" />
+			<Cursor1 position="1044" topLine="0" />
 		</Cursor>
 		<Folding>
-			<Collapse line="25" />
-			<Collapse line="202" />
-			<Collapse line="209" />
-			<Collapse line="213" />
-			<Collapse line="222" />
-			<Collapse line="226" />
-			<Collapse line="230" />
-			<Collapse line="240" />
-			<Collapse line="252" />
-			<Collapse line="254" />
-			<Collapse line="260" />
-			<Collapse line="272" />
-			<Collapse line="274" />
-			<Collapse line="283" />
-			<Collapse line="298" />
-			<Collapse line="313" />
-			<Collapse line="315" />
-			<Collapse line="324" />
-			<Collapse line="327" />
-			<Collapse line="336" />
-			<Collapse line="344" />
-			<Collapse line="346" />
-			<Collapse line="348" />
-			<Collapse line="350" />
-			<Collapse line="355" />
-			<Collapse line="362" />
-			<Collapse line="369" />
+			<Collapse line="0" />
+			<Collapse line="13" />
+			<Collapse line="20" />
+		</Folding>
+	</File>
+	<File name="funciones.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="10577" topLine="127" />
+		</Cursor>
+		<Folding>
+			<Collapse line="30" />
+			<Collapse line="36" />
+			<Collapse line="47" />
+			<Collapse line="66" />
+			<Collapse line="118" />
+			<Collapse line="124" />
+			<Collapse line="141" />
+			<Collapse line="152" />
+			<Collapse line="163" />
+			<Collapse line="180" />
+			<Collapse line="187" />
+		</Folding>
+	</File>
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="7" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="282" topLine="10" />
+		</Cursor>
+		<Folding>
+			<Collapse line="30" />
+			<Collapse line="36" />
 		</Folding>
 	</File>
 </CodeBlocks_layout_file>
