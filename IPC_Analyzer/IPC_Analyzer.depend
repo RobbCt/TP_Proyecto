@@ -5,17 +5,14 @@
 	<stdio.h>
 	<stdlib.h>
 
-1760232701 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.c
+1761182767 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.c
 	<stdlib.h>
 	"funciones.h"
 
-1760232456 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\main.c
+1761146791 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-	<windows.h>
-	"funciones.h"
-	<stdlib.h>
 	<windows.h>
 	"funciones.h"
 
@@ -54,7 +51,7 @@
 	<windows.h>
 	"funciones.h"
 
-1760221143 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.h
+1761146817 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.h
 	<string.h>
 	<stdio.h>
 	<ctype.h>

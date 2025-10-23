@@ -44,6 +44,8 @@ void divisionParseReg(); //consigna 4 propuesto por robbi
 
 int divisionesArchTextABin();
 
+int menu_ipc(); //p5
+
 //primitivasn't
 
 int regTextABin(DIVISION*, char*); //creamos nuestro hermoso .bin

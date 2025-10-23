@@ -17,6 +17,11 @@ char* dirUltComillas(char *);
 int setearString(char *,char *);
 int setearDouble(char *, double *);
 
+int ajustarMontoIPC(FILE*, double, int, FECHA, FECHA);
+
+int valInt(int,int);
+FECHA valFecha();
+
 int divisionesArchTextABin()
 {
     FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
@@ -200,7 +205,7 @@ int setearString(char *cadena,char *campo)
 
 int setearDouble(char *cadena, double *campo)
 {
-    if (*cadena == 'N' && *cadena+1 == 'A')
+    if (*cadena == 'N' && *(cadena+1) == 'A')
         *campo = 0;
     else
     {
@@ -261,6 +266,119 @@ int comaApunto(char *cadena)
     return TODO_OK;
 }
 
+int menu_ipc()
+{
+    FILE* pf = fopen("../Data/serie_ipc_divisiones(test).dat", "rb");
+    if(!pf) {
+    puts("No se pudo abrir el archivo de datos IPC.");
+    exit(1);}
 
+    double maux;
+    int raux;
+    FECHA desde, hasta;
+
+    puts("\n\n--MONTOS AJUSTADOS--\n");
+    do{
+        puts("Ingrese un monto expresado en pesos: ");
+        scanf("%lf", &maux);
+        if(maux<=0)
+            puts("INVALIDO, monto fuera de rango, reintente. ");
+    }while(maux<=0);
+
+    puts("\nSeleccione la region correspondiente:");
+    puts("1 - Nacional\n2 - GBA\n3 - Pampeana\n4 - Cuyo\n5 - Noroeste\n6 - Noreste\n7 - Patagonia\n");
+    puts("Opcion: ");
+    raux = valInt(1,7);
+
+    puts("\nIngrese Periodo Desde [formato dddd-mm]");
+    desde = valFecha();
+
+    do{
+        puts("Ingrese Periodo Hasta [formato dddd-mm]: ");
+        hasta = valFecha();
+
+        if((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes))
+            puts("Invalido, el periodoHasta no puede ser menor (o igual) a periodoDesde, reingrese.. ");
+    }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
+
+    ajustarMontoIPC(pf, maux, raux, desde, hasta);
+
+    fclose(pf);
+    return TODO_OK;
+}
+
+int valInt(int li, int ls)
+{
+    int x;
+    do{
+        scanf("%d", &x);
+        if(x<li || x>ls)
+            puts("INVALIDO, reintente..");
+    }while(x<li || x>ls);
+
+    return x;
+}
+FECHA valFecha()
+{
+    FECHA x;
+    do
+    {
+        scanf("%d-%d", &x.anio, &x.mes);
+        if((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12))
+            puts("FECHA INVALIDA, reintente..");
+    }while((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12));
+
+    return x;
+}
+int ajustarMontoIPC(FILE *pf, double monto, int region, FECHA desde, FECHA hasta)
+{
+    DIVISION reg;
+    double ipcDesde = 0, ipcHasta = 0;
+    char *regiones[] = {"Nacional", "GBA", "Pampeana", "Cuyo", "Noroeste", "Noreste", "Patagonia"};
+    FECHA fDesde, fHasta;
+
+    rewind(pf);
+    while(fread(&reg, sizeof(DIVISION), 1, pf))
+    {   ///filtro de descr(por consigna)
+        if (strcmpi(reg.descrip, "Nivel general") == 0)
+        {  //filtro region
+            if(strcmpi(reg.region, regiones[region - 1]) == 0)
+            {   //buscamos que el anio y mes "desde" coincidan
+                if((reg.periodo_codif.anio == desde.anio && reg.periodo_codif.mes == desde.mes)&& ipcDesde == 0)//|| (reg.periodo_codif.anio > desde.anio))
+                { //Caso lindo: encontramos la fecha exacta
+                    ipcDesde = reg.ind_ipc;
+                    fDesde = reg.periodo_codif;
+                }
+                if(((reg.periodo_codif.anio > desde.anio) || (reg.periodo_codif.anio == desde.anio && reg.periodo_codif.mes > desde.mes)) && ipcDesde == 0)
+                {   //Caso feo: no encontramos la fecha exacta, tomamos la proxima mayor
+                    ipcDesde = reg.ind_ipc;
+                    fDesde = reg.periodo_codif;
+                }
+            }
+            // si la fecha del registro es anterior o igual al "hasta" solicitado
+            if (((reg.periodo_codif.anio < hasta.anio) || (reg.periodo_codif.anio == hasta.anio && reg.periodo_codif.mes <= hasta.mes)))
+            {
+                ipcHasta = reg.ind_ipc;
+                fHasta = reg.periodo_codif;
+            }
+        }
+    }
+
+    if (ipcDesde == 0 || ipcHasta == 0) {
+        puts("No se encontraron datos de IPC en los periodos indicados..");
+        return TODO_MAL; //ahre
+    }
+
+    double montoAjustado = monto*(ipcHasta/ipcDesde);
+    double variacion = (ipcHasta/ipcDesde-1) *100;
+
+    printf("\nMonto inicial: %.2lf$", monto);
+    printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
+    printf("\nPeriodo hasta: %d-%02d \t IPC: %.2lf", fHasta.anio, fHasta.mes, ipcHasta);
+    printf("\nMonto ajustado: %.2lf$", montoAjustado);
+    printf("\nVariacion porcentual: %.2lf\n", variacion);
+
+    return TODO_OK;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
