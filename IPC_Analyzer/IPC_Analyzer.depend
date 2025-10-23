@@ -31,23 +31,20 @@
 	<windows.h>
 	"funciones.h"
 
-1760735149 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
+1761235518 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
 	<stdlib.h>
 	"funciones.h"
 
-1760733917 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
+1761235561 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
 	<string.h>
 	<stdio.h>
 	<ctype.h>
 	<stdbool.h>
 
-1760733988 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
+1761235561 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-	<windows.h>
-	"funciones.h"
-	<stdlib.h>
 	<windows.h>
 	"funciones.h"
 

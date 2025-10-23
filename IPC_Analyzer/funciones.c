@@ -22,10 +22,10 @@ int ajustarMontoIPC(FILE*, double, int, FECHA, FECHA);
 int valInt(int,int);
 FECHA valFecha();
 
-int divisionesArchTextABin()
+int divisionesArchTextATxt() ///agregar encabezado
 {
     FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
-    FILE *archBin = fopen("../Data/serie_ipc_divisiones(test).dat","wb"); //nuevo arch bin
+    FILE *archTxt2 = fopen("../Data/serie_ipc_divisiones2(test).csv","wt"); //nuevo arch bin
 
     if(!archTxt)
     {
@@ -33,7 +33,7 @@ int divisionesArchTextABin()
         exit(1);
     }
 
-    if(!archBin)
+    if(!archTxt2)
     {
         puts("No se pudo crear el archivo (.bin): serie_ipc_divisiones(test)");
         fclose(archTxt);
@@ -50,16 +50,18 @@ int divisionesArchTextABin()
 
         regTextABin(&regB,regT);
 
-        fwrite(&regB, sizeof(DIVISION), 1, archBin);
+        fprintf(archTxt2, "%s;%s;%s;%.2lf;%.2lf;%.2lf;%s;%d;%d;%s\n", regB.cod, regB.descrip, regB.clasif, regB.ind_ipc, regB.v_m_ipc, regB.v_i_a_ipc, regB.region, regB.periodo_codif.anio, regB.periodo_codif.mes, regB.periodo_codif.periodo);
+
     }
 
-    fclose(archBin);
+    fclose(archTxt2);
     fclose(archTxt);
 
     puts("\nTODO_OK\n");
 
     return TODO_OK;
 }
+
 
 int regTextABin(DIVISION *regB, char *regT)
 {
@@ -124,6 +126,7 @@ int regTextABin(DIVISION *regB, char *regT)
          normalizarDescr(pIniCamp + 1, regB);
          *pIniCamp = '\0';
      }
+
 
      pFinCamp = strrchr(regT,';'); //codigo
      *(dirUltComillas(regT)) = '\0';

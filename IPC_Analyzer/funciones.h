@@ -29,6 +29,10 @@ typedef struct
     FECHA periodo_codif; //asi tenemos separada la fecha(capaz lo necesitemos mas adelante)
 }DIVISION;
 
+
+
+
+
 //Primitivas
 int divisionDecodificarFecha(char *,DIVISION*); //consigna 1
 
@@ -42,7 +46,7 @@ void conversionIndice(DIVISION*); //consigna 4
 
 void divisionParseReg(); //consigna 4 propuesto por robbi
 
-int divisionesArchTextABin();
+int divisionesArchTextATxt();
 
 int menu_ipc(); //p5
 

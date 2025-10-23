@@ -18,7 +18,7 @@ void mostrarBin();
 int main()
 {
 
-    divisionesArchTextABin();
+    divisionesArchTextATxt();
 
     mostrarBin();
 
