@@ -35,10 +35,10 @@ typedef struct
 
 typedef struct
 {
-    DIVISION *vec;
+    void *vec;
     size_t ce;
     size_t cap;
-}VecDIVISION;
+}VecDIVISION; //solo "vec" pq sirve para los vecotres de tipo estructura de division y grupo
 
 typedef struct
 {
@@ -48,6 +48,9 @@ typedef struct
     char region[30];
     char grup[10];
 }GRUPO;
+
+
+
 
 
 //Primitivas

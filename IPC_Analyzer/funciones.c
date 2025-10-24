@@ -44,6 +44,32 @@ int comaApunto(char *cadena)
     return TODO_OK;
 }
 
+int valInt(int li, int ls)
+{
+    int x;
+    do{
+        scanf("%d", &x);
+        if(x<li || x>ls)
+            puts("INVALIDO, reintente..");
+    }while(x<li || x>ls);
+
+    return x;
+}
+
+FECHA valFecha()
+{
+    FECHA x;
+    do
+    {
+        scanf("%d-%d", &x.anio, &x.mes);
+        if((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12))
+            puts("FECHA INVALIDA, reintente..");
+    }while((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12));
+
+    return x;
+}
+
+
 
 //definicon de primitivas
 int divisionesArchTextAVar(FILE* archTxt,VecDIVISION* vecDivision)
@@ -259,29 +285,13 @@ int menu_ipc(VecDIVISION* vecDivision)
     return TODO_OK;
 }
 
-int valInt(int li, int ls)
-{
-    int x;
-    do{
-        scanf("%d", &x);
-        if(x<li || x>ls)
-            puts("INVALIDO, reintente..");
-    }while(x<li || x>ls);
 
-    return x;
-}
-FECHA valFecha()
-{
-    FECHA x;
-    do
-    {
-        scanf("%d-%d", &x.anio, &x.mes);
-        if((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12))
-            puts("FECHA INVALIDA, reintente..");
-    }while((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12));
 
-    return x;
-}
+
+
+
+//hacerlas andar
+
 int ajustarMontoIPC(VecDIVISION* vecDiv, double monto, int region, FECHA desde, FECHA hasta)
 {
     double ipcDesde = 0, ipcHasta = 0;
@@ -342,14 +352,74 @@ int ajustarMontoIPC(VecDIVISION* vecDiv, double monto, int region, FECHA desde, 
     return TODO_OK;
 }
 
+int evoIPCporGrupos(VecDIVISION* vecDivision,VecDIVISION* vecGrupo)
+{
+    DIVISION division;
+    GRUPO grupo;
+    int escribir;
+
+    size_t ind = 0;
+
+    char bienes[] = {{"Alimentos y bebidas no alcohólicas"},{" Bebidas alcohólicas y tabaco"},
+                     {" Bebidas alcohólicas y tabaco"},{"Bienes y servicios varios"}
+                     {"Equipamiento y mantenimiento del hogar"}
+                    }
+
+    char servicios[] = {{"Recreación y cultura"},{"Restaurantes y hoteles"},{"Salud"},{"Transporte"},
+                        {"Educación"},{"Comunicación"},{"Comunicación"},
+                        {"Vivienda, agua, electricidad, gas y otros combustibles"}
+                       }
+
+    while(ind < vecDivision -> ce)
+    {
+
+        division = *(vecDivision -> vec + ind)
+
+        if(escribir = esBien(division.descrip, bienes))
+        {
+            grupo.f = division.periodo_codif;
+
+            strcpy(grupo.descrip,division.descrip);
+
+            grupo.ind_ipc = division.ind_ipc;
+
+            strcpy(grupo.region,division.region);
+
+            strcpy(grupo.grup,"Bienes");
+        }
+
+        if(escribir = esServicio(division.descrip, servicios))
+        {
+            grupo.f = division.periodo_codif;
+
+            strcpy(grupo.descrip,division.descrip);
+
+            grupo.ind_ipc = division.ind_ipc;
+
+            strcpy(grupo.region,division.region);
+
+            strcpy(grupo.grup,"Servicio");
+        }
+
+        if(escribir)
+            vectorAgregar(&grupo,vecGrupo,sizeof(GRUPO));
+
+
+        escribir = 0;
+        ind++;
+    }
+}
+
+
 
 //#######################################################################################################################
 
 
 //memoria dinamica
-bool vectorCrear(VecDIVISION* vec)
+//hacerlas totalmente genericas
+bool vectorCrear(VecDIVISION* vec,size_t tam)
 {
-    vec->vec = malloc(sizeof(DIVISION) * DEFAULT_CAP);
+    vec->vec = malloc(tam * DEFAULT_CAP);
 
     if(!(vec->vec))
     {
@@ -364,25 +434,23 @@ bool vectorCrear(VecDIVISION* vec)
     return true;
 }
 
-bool vectorAgregar(DIVISION* regV, VecDIVISION* vecDivision)
+bool vectorAgregar(void* elem, VecDIVISION* vec, size_t tam)
 {
-    if (vecDivision -> ce >= vecDivision -> cap)
+    if (vec->ce >= vec->cap)
     {
         // Redimensionar
-        size_t nueva_cap = vecDivision -> cap * INCR_FACTOR;
-
-        DIVISION *temporal = realloc(vecDivision -> vec, sizeof(DIVISION) * nueva_cap);
+        size_t nueva_cap = vec->cap * INCR_FACTOR;
+        void* temporal = realloc(vec->vec, tam * nueva_cap);
 
         if (!temporal)
             return false;
 
-        vecDivision -> vec = temporal;
-        vecDivision -> cap = nueva_cap;
+        vec->vec = temporal;
+        vec->cap = nueva_cap;
     }
 
-
-    *(vecDivision->vec + vecDivision->ce) = *regV;
-    vecDivision->ce++;
+    memcpy((char*)vec->vec + vec->ce * tam, elem, tam);
+    vec->ce++;
 
     return true;
 }

@@ -23,7 +23,11 @@ int main()
     }
 
     VecDIVISION vecDivision;
-    vectorCrear(&vecDivision);
+    vectorCrear(&vecDivision,sizeof(DIVISION));
+
+    GRUPO vecGrupo;
+    vectorCrear(&vecGrupo,sizeof(GRUPO));
+
 
     ////////////////////////////////////W
 
@@ -32,6 +36,8 @@ int main()
     //imprimirVec(&vecDivision);
 
     menu_ipc(&vecDivision);
+
+    evoIPCporGrupos(&vecDivision,&vecGrupo);
 
     ////////////////////////////////////W
 
