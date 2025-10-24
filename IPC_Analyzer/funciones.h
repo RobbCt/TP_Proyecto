@@ -40,6 +40,15 @@ typedef struct
     size_t cap;
 }VecDIVISION;
 
+typedef struct
+{
+    FECHA f;
+    char descrip[81];
+    double ind_ipc;
+    char region[30];
+    char grup[10];
+}GRUPO;
+
 
 //Primitivas
 
@@ -59,6 +68,11 @@ int divisionNormalizarDescr(char*,DIVISION*);
 //primitivasn't
 
 int regTextAVar(DIVISION*,char*);
+
+int ajustarMontoIPC(VecDIVISION*, double, int, FECHA, FECHA);
+
+int menu_ipc(VecDIVISION* );
+
 
 
 

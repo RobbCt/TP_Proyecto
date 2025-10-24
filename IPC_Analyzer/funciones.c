@@ -15,6 +15,10 @@
 char* dirUltComillas(char *);
 int comaApunto(char *);
 
+int valInt(int,int);
+FECHA valFecha();
+
+
 
 //utilitarias
 char* dirUltComillas(char *TrozoRegT)
@@ -46,8 +50,6 @@ int divisionesArchTextAVar(FILE* archTxt,VecDIVISION* vecDivision)
 {
     DIVISION regV; //# de variable tipo struct
     char regT[MAXTAMREG];
-
-    int i=0;
 
     //saltar encabezado
     fgets(regT,MAXTAMREG,archTxt);
@@ -217,6 +219,125 @@ int divisionNormalizarDescr(char *str, DIVISION* reg)
         *temp = tolower(*temp);
 
     strcpy(reg->descrip, str);
+
+    return TODO_OK;
+}
+
+int menu_ipc(VecDIVISION* vecDivision)
+{
+    double monto;
+    int region;
+    FECHA desde, hasta;
+
+    puts("\n\n--MONTOS AJUSTADOS--\n");
+    do{
+        puts("Ingrese un monto expresado en pesos: ");
+        scanf("%lf", &monto);
+        if(monto<=0)
+            puts("INVALIDO, monto fuera de rango, reintente. ");
+    }while(monto<=0);
+
+    puts("\nSeleccione la region correspondiente:");
+    puts("1 - Nacional\n2 - GBA\n3 - Pampeana\n4 - Cuyo\n5 - Noroeste\n6 - Noreste\n7 - Patagonia\n");
+    puts("Opcion: ");
+    region = valInt(1,7);
+
+    puts("\nIngrese Periodo Desde [formato aaaa-mm]");
+    desde = valFecha();
+
+    do{
+        puts("Ingrese Periodo Hasta [formato aaaa-mm]: ");
+        hasta = valFecha();
+
+        if((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes))
+            puts("Invalido, el periodoHasta no puede ser menor (o igual) a periodoDesde, reingrese.. ");
+    }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
+
+    if(!ajustarMontoIPC(vecDivision, monto, region, desde, hasta))
+        return TODO_MAL;
+
+    return TODO_OK;
+}
+
+int valInt(int li, int ls)
+{
+    int x;
+    do{
+        scanf("%d", &x);
+        if(x<li || x>ls)
+            puts("INVALIDO, reintente..");
+    }while(x<li || x>ls);
+
+    return x;
+}
+FECHA valFecha()
+{
+    FECHA x;
+    do
+    {
+        scanf("%d-%d", &x.anio, &x.mes);
+        if((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12))
+            puts("FECHA INVALIDA, reintente..");
+    }while((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12));
+
+    return x;
+}
+int ajustarMontoIPC(VecDIVISION* vecDiv, double monto, int region, FECHA desde, FECHA hasta)
+{
+    double ipcDesde = 0, ipcHasta = 0;
+    char *regiones[] = {"Nacional", "GBA", "Pampeana", "Cuyo", "Noroeste", "Noreste", "Patagonia"};
+    FECHA fDesde, fHasta;
+    int i=0;
+
+    while(i<vecDiv->ce) //&& (ipcDesde == 0 || ipcHasta == 0)) //por el momento funca sin esa cond, buscar optimizacion con casos de prueba
+    {
+        ///filtro de descr(por consigna)
+        if (strcmpi((*(vecDiv->vec + i)).descrip, "Nivel general") == 0)
+        {  //filtro region
+            if(strcmpi((*(vecDiv->vec + i)).region, regiones[region - 1]) == 0)
+            {   //buscamos que el anio y mes "desde" coincidan
+               if (
+                (*(vecDiv->vec + i)).periodo_codif.anio == desde.anio &&
+                (*(vecDiv->vec + i)).periodo_codif.mes == desde.mes &&
+                ipcDesde == 0)
+//|| (vecDiv.periodo_codif.anio > desde.anio))
+                { //Caso lindo: encontramos la fecha exacta
+                    ipcDesde = (*(vecDiv->vec + i)).ind_ipc;
+                    fDesde = (*(vecDiv->vec + i)).periodo_codif;
+                }
+                if (((( *(vecDiv->vec + i) ).periodo_codif.anio > desde.anio) ||
+                     (( *(vecDiv->vec + i) ).periodo_codif.anio == desde.anio &&
+                      ( *(vecDiv->vec + i) ).periodo_codif.mes > desde.mes)) &&
+                    ipcDesde == 0)
+                {
+                    puts("\nNo encontramos la fecha exacta, se usara la mas cercana a ella dentro del periodo...");
+                    ipcDesde = (*(vecDiv->vec + i)).ind_ipc;
+                    fDesde = (*(vecDiv->vec + i)).periodo_codif;
+                }
+            }
+            // si la fecha del registro es anterior o igual al "hasta" solicitado
+            if((((*(vecDiv->vec + i)).periodo_codif.anio < hasta.anio)) || ((*(vecDiv->vec + i)).periodo_codif.anio == hasta.anio && (*(vecDiv->vec + i)).periodo_codif.mes <= hasta.mes))
+            {
+                ipcHasta = (*(vecDiv->vec + i)).ind_ipc;
+                fHasta = (*(vecDiv->vec + i)).periodo_codif;
+            }
+        }
+        i++;
+    }
+
+    if (ipcDesde == 0 || ipcHasta == 0) {
+        puts("No se encontraron datos de IPC en los periodos indicados..");
+        return TODO_MAL; //ahre
+    }
+
+    double montoAjustado = monto*(ipcHasta/ipcDesde);
+    double variacion = (ipcHasta/ipcDesde-1) *100;
+
+    printf("\nMonto inicial: %.2lf$", monto);
+    printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
+    printf("\nPeriodo hasta: %d-%02d \t IPC: %.2lf", fHasta.anio, fHasta.mes, ipcHasta);
+    printf("\nMonto ajustado: %.2lf$", montoAjustado);
+    printf("\nVariacion porcentual: %.2lf\n", variacion);
 
     return TODO_OK;
 }

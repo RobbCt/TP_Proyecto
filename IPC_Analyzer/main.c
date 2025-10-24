@@ -25,10 +25,17 @@ int main()
     VecDIVISION vecDivision;
     vectorCrear(&vecDivision);
 
+    ////////////////////////////////////W
+
     divisionesArchTextAVar(archTxt,&vecDivision);
 
-    imprimirVec(&vecDivision);
+    //imprimirVec(&vecDivision);
 
+    menu_ipc(&vecDivision);
+
+    ////////////////////////////////////W
+
+    vectorDestruir(&vecDivision);
     fclose(archTxt);
     return 0;
 }
