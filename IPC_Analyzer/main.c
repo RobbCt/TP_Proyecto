@@ -9,49 +9,49 @@
 #include "funciones.h"
 
 //define's
-#define TAM 10 //temporal
 
-void imprimirRegistros(DIVISION*);
 
-void mostrarTxt(FILE* arch);
+void imprimirVec(VecDIVISION* vecDivision);
 
 int main()
 {
-    FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
-    FILE *archTxt2 = fopen("../Data/serie_ipc_divisiones2(test).csv","w+t"); //nuevo arch txt2.0
+    FILE *archTxt = fopen("../Data/serie_ipc_divisiones.csv","rt");
+
     if(!archTxt){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
         exit(1);
     }
-    if(!archTxt2){
-        puts("No se pudo crear el archivo (.txt): serie_ipc_divisiones2(test)");
-        fclose(archTxt);
-        exit(1);
-    }
 
-    divisionesArchTextATxt(archTxt, archTxt2);
+    VecDIVISION vecDivision;
+    vectorCrear(&vecDivision);
 
-    mostrarTxt(archTxt2);
+    divisionesArchTextAVar(archTxt,&vecDivision);
 
-    menu_ipc(archTxt2);
+    imprimirVec(&vecDivision);
 
-    fclose(archTxt2);
     fclose(archTxt);
     return 0;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void mostrarTxt(FILE* arch)
+void imprimirVec(VecDIVISION* vecDivision)
 {
-    rewind(arch);
 
-    char linea[512];
-    int i = 1;
+    int i;
+    for(i=0;i < vecDivision -> ce;i++)
+    {
+        printf("\n-------------------------------------------------");
+        printf("%s | %s | %s | %.2f | %.2f | %.2f | %s | %s (%d-%d)\n",
+        vecDivision->vec[i].cod,
+        vecDivision->vec[i].descrip,
+        vecDivision->vec[i].clasif,
+        vecDivision->vec[i].ind_ipc,
+        vecDivision->vec[i].v_m_ipc,
+        vecDivision->vec[i].v_i_a_ipc,
+        vecDivision->vec[i].region,
+        vecDivision->vec[i].periodo_codif.periodo,
+        vecDivision->vec[i].periodo_codif.anio,
+        vecDivision->vec[i].periodo_codif.mes);
+    }
 
-    puts("------------------------------------------------------------\n");
-    while (fgets(linea, sizeof(linea), arch))
-        printf("Linea %d: %s", i++, linea);
-    puts("------------------------------------------------------------\n");
-
-    system("pause");
+    printf("\n%d registros",i);
 }
-

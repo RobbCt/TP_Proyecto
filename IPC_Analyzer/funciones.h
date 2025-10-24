@@ -8,7 +8,11 @@
 #include <stdbool.h>
 
 //define's
-#define MAXTAMREG 160
+#define MAXTAMREG 4096
+#define CANTMAXCHAR 17
+#define MESES 12
+#define INCR_FACTOR 2
+#define DEFAULT_CAP 10
 
 typedef struct
 {
@@ -26,32 +30,45 @@ typedef struct
     double v_m_ipc;
     double v_i_a_ipc;
     char region[30];
-    FECHA periodo_codif; //asi tenemos separada la fecha(capaz lo necesitemos mas adelante)
+    FECHA periodo_codif;
 }DIVISION;
 
-
-
+typedef struct
+{
+    DIVISION *vec;
+    size_t ce;
+    size_t cap;
+}VecDIVISION;
 
 
 //Primitivas
-int divisionDecodificarFecha(char *,DIVISION*); //consigna 1
 
-int convertirFechaDecodificadaAString(DIVISION*); // Consigna 2
+int divisionesArchTextAVar(FILE*,VecDIVISION*);
 
-int normalizarDescr(char *,DIVISION*); //consigna 3
+int divisionDecodificarFecha(char*,DIVISION*);
 
-void filtroRegClaf(DIVISION*, char*, char*); //consigna 3
+int divisionFechDecodAStr(DIVISION*);
 
-void conversionIndice(DIVISION*); //consigna 4
+int divisionSetString(char*,char*);
 
-void divisionParseReg(); //consigna 4 propuesto por robbi
+int divisionSetDouble(char*,double*);
 
-int divisionesArchTextATxt(FILE* archTxt, FILE* archTxt2);
+int divisionNormalizarDescr(char*,DIVISION*);
 
-int menu_ipc(FILE*); //p5
 
 //primitivasn't
 
-int regTextABin(DIVISION*, char*); //creamos nuestro hermoso .bin
+int regTextAVar(DIVISION*,char*);
+
+
+
+//memoria dianmica
+
+bool vectorCrear(VecDIVISION*);
+
+bool vectorAgregar(DIVISION*, VecDIVISION*);
+
+void vectorDestruir(VecDIVISION*);
+
 
 #endif // FUNCIONES_H_INCLUDED
