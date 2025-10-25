@@ -15,12 +15,16 @@
 
 char* dirUltComillas(char *);
 int comaApunto(char *);
-
 int valInt(int,int);
 FECHA valFecha();
-
 int esBien(char*, char*[]);
 int esServicio(char*, char*[]);
+int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
+int setearVarGrupo(DIVISION*,GRUPO*,char*);
+
+
+
+
 
 //utilitarias
 char* dirUltComillas(char *TrozoRegT)
@@ -69,6 +73,71 @@ FECHA valFecha()
     }while((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12));
 
     return x;
+}
+
+int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
+{
+    if(vec->ce == vec->cap)
+        if(!redimensionarVector(vec, vec->cap * INCR_FACTOR, tam))
+            return TODO_MAL;
+
+
+    GRUPO* i = (GRUPO*) vec -> vec;
+    GRUPO* j = i + vec->ce - 1;
+
+    while(i <= j && strcmpi(elem->grup, i -> grup) > 0)
+        i++;
+
+
+    // (opcional) para duplicados:
+    // if (i <= j && strcmpi(elem->grup, i->grup) == 0)
+    //     return TODO_MAL;
+
+    for(; i <= j; j--){
+        *(j + 1) = *j;
+    }
+
+    *i = *elem;
+    vec->ce++;
+
+    return TODO_OK;
+}
+
+int esBien(char* descrip, char* bienes[])
+{
+    int i;
+    for(i=0;i<5;i++)
+    {
+        if(strcmpi(descrip, bienes[i])==0)
+            return 1;
+    }
+    return 0;
+}
+
+int esServicio(char* descrip, char* servicios[])
+{
+    int i;
+    for(i=0;i<8;i++)
+    {
+        if(strcmpi(descrip, servicios[i])==0)
+            return 1;
+    }
+    return 0;
+}
+
+int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
+{
+    grupo -> f = division -> periodo_codif;
+
+    strcpy(grupo -> descrip,division -> descrip);
+
+    grupo -> ind_ipc = division -> ind_ipc;
+
+    strcpy(grupo -> region,division -> region);
+
+    strcpy(grupo -> grup,categoria);
+
+    return TODO_OK;
 }
 
 
@@ -287,13 +356,6 @@ int menu_ipc(VecGenerico* vecDivision)
     return TODO_OK;
 }
 
-
-
-
-
-
-//hacerlas andar
-
 int ajustarMontoIPC(VecGenerico* vecDiv, double monto, int region, FECHA desde, FECHA hasta)
 {
     double ipcDesde = 0, ipcHasta = 0;
@@ -356,15 +418,13 @@ int ajustarMontoIPC(VecGenerico* vecDiv, double monto, int region, FECHA desde, 
     return TODO_OK;
 }
 
-int clasifGrupo(VecGenerico* vecDivision,VecGenerico* vecGrupo)
+int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 {
     DIVISION division;
     GRUPO grupo;
     int escribir;
 
     size_t ind = 0;
-
-    int b=0,s=0;
 
      char *bienes[] = {
         "Alimentos y bebidas no alcohólicas",
@@ -391,7 +451,7 @@ int clasifGrupo(VecGenerico* vecDivision,VecGenerico* vecGrupo)
             setearVarGrupo(&division,&grupo,"Servicio");
 
         if(escribir)
-            vectorAgregar(&grupo,vecGrupo,sizeof(GRUPO));
+            vectorInsertOrdPorCamp(&grupo,vecGrupo,sizeof(GRUPO));
 
         ind++;
     }
@@ -399,39 +459,12 @@ int clasifGrupo(VecGenerico* vecDivision,VecGenerico* vecGrupo)
     return TODO_OK;
 }
 
-int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
-{
-    grupo -> f = division -> periodo_codif;
 
-    strcpy(grupo -> descrip,division -> descrip);
 
-    grupo -> ind_ipc = division -> ind_ipc;
 
-    strcpy(grupo -> region,division -> region);
 
-    strcpy(grupo -> grup,categoria);
 
-    return TODO_OK;
-}
 
-int esBien(char* descrip, char* bienes[])
-{
-    int i;
-    for(i=0;i<5;i++)
-    {
-        if(strcmpi(descrip, bienes[i])==0)
-            return 1;
-    }
-    return 0;
-}
 
-int esServicio(char* descrip, char* servicios[])
-{
-    int i;
-    for(i=0;i<8;i++)
-    {
-        if(strcmpi(descrip, servicios[i])==0)
-            return 1;
-    }
-    return 0;
-}
+
+

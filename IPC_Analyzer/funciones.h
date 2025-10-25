@@ -44,8 +44,6 @@ typedef struct
 
 
 
-
-
 //Primitivas
 
 int divisionesArchTextAVar(FILE*,VecGenerico*);
@@ -69,9 +67,10 @@ int menu_ipc(VecGenerico*);
 
 int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA);
 
-int clasifGrupo(VecGenerico*,VecGenerico*);
+int grupoClasif(VecGenerico*,VecGenerico*);
 
-int setearVarGrupo(DIVISION*,GRUPO*,char*);
+
+
 
 
 #endif // FUNCIONES_H_INCLUDED

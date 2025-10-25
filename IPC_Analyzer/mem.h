@@ -19,6 +19,8 @@ bool vectorCrear(VecGenerico*,size_t);
 
 bool vectorAgregar(void*, VecGenerico*, size_t);
 
+bool redimensionarVector(VecGenerico*,size_t,size_t);
+
 void vectorDestruir(VecGenerico*);
 
 #endif // MEM_H_INCLUDED

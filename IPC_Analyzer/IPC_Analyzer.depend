@@ -5,14 +5,14 @@
 	<stdio.h>
 	<stdlib.h>
 
-1761413629 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.c
+1761423079 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.c
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
 	"funciones.h"
 	"mem.h"
 
-1761413399 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\main.c
+1761422710 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -53,7 +53,7 @@
 	<windows.h>
 	"funciones.h"
 
-1761406661 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.h
+1761423079 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\funciones.h
 	<string.h>
 	<stdio.h>
 	<ctype.h>
@@ -114,13 +114,13 @@
 	<windows.h>
 	"funciones.h"
 
-1761404155 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\mem.c
+1761422601 source:c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\mem.c
 	<stddef.h>
 	<stdlib.h>
 	<stdio.h>
 	<string.h>
 	"mem.h"
 
-1761403771 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\mem.h
+1761422542 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\mem.h
 	<stdbool.h>
 

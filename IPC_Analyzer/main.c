@@ -16,7 +16,7 @@ void imprimirVecGrupo(VecGenerico* vecGrupo);
 
 int main()
 {
-    FILE *archTxt = fopen("../Data/serie_ipc_divisiones.csv","rt");
+    FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
 
     if(!archTxt){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
@@ -39,7 +39,7 @@ int main()
 
     //menu_ipc(&vecDivision);
 
-    clasifGrupo(&vecDivision,&vecGrupo);
+    grupoClasif(&vecDivision,&vecGrupo);
 
     puts("este es el main");
     imprimirVecGrupo(&vecGrupo);

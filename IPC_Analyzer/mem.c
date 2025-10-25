@@ -10,8 +10,8 @@
 #include "mem.h"
 
 
-//vectorCrear(dir var tipo VecGenerico, tam de elemento)
-bool vectorCrear(VecGenerico* vec,size_t tam)
+//vectorCrear(dir var tipo vecGenerico, tam de elemento)
+bool vectorCrear(VecGenerico* vec, size_t tam)
 {
     vec->vec = malloc(tam * DEFAULT_CAP);
 
@@ -33,19 +33,28 @@ bool vectorAgregar(void* elem, VecGenerico* vec, size_t tam)
 {
     if (vec->ce >= vec->cap)
     {
-        // Redimensionar
-        size_t nueva_cap = vec->cap * INCR_FACTOR;
-        void* temporal = realloc(vec->vec,nueva_cap * tam);
-
-        if (!temporal)
+        if(!redimensionarVector(vec,vec->cap * INCR_FACTOR,tam))
             return false;
-
-        vec->vec = temporal;
-        vec->cap = nueva_cap;
     }
 
     memcpy((char*)vec->vec + vec->ce * tam, elem, tam);
     vec->ce++;
+
+    return true;
+}
+
+//redimensionarVector(dir var tipo vecGenerico, nueva cantidad de indices, tam del elemento)
+bool redimensionarVector(VecGenerico* vec,size_t cap,size_t tam)
+{
+    void* temporal = realloc(vec->vec, cap * tam);
+
+    if(!(temporal))
+    {
+        return false;
+    }
+
+    vec->vec = temporal;
+    vec->cap = cap;
 
     return true;
 }
@@ -58,3 +67,5 @@ void vectorDestruir(VecGenerico* vec)
     vec->ce = 0;
     vec->cap = 0;
 }
+
+
