@@ -71,7 +71,7 @@ int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA);
 
 int clasifGrupo(VecGenerico*,VecGenerico*);
 
-
+int setearVarGrupo(DIVISION*,GRUPO*,char*);
 
 
 #endif // FUNCIONES_H_INCLUDED

@@ -19,7 +19,8 @@ int comaApunto(char *);
 int valInt(int,int);
 FECHA valFecha();
 
-
+int esBien(char*, char*[]);
+int esServicio(char*, char*[]);
 
 //utilitarias
 char* dirUltComillas(char *TrozoRegT)
@@ -303,34 +304,36 @@ int ajustarMontoIPC(VecGenerico* vecDiv, double monto, int region, FECHA desde, 
     while(i<vecDiv->ce) //&& (ipcDesde == 0 || ipcHasta == 0)) //por el momento funca sin esa cond, buscar optimizacion con casos de prueba
     {
         ///filtro de descr(por consigna)
-        if (strcmpi((*(vecDiv->vec + i)).descrip, "Nivel general") == 0)
+        if (strcmpi(((DIVISION*)(vecDiv->vec) + i) -> descrip, "Nivel general") == 0)
         {  //filtro region
-            if(strcmpi((*(vecDiv->vec + i)).region, regiones[region - 1]) == 0)
+            if(strcmpi(((DIVISION*)(vecDiv->vec) + i) -> region, regiones[region - 1]) == 0)
             {   //buscamos que el anio y mes "desde" coincidan
                if (
-                (*(vecDiv->vec + i)).periodo_codif.anio == desde.anio &&
-                (*(vecDiv->vec + i)).periodo_codif.mes == desde.mes &&
+                ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif.anio == desde.anio &&
+                ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif.mes == desde.mes &&
                 ipcDesde == 0)
 //|| (vecDiv.periodo_codif.anio > desde.anio))
                 { //Caso lindo: encontramos la fecha exacta
-                    ipcDesde = (*(vecDiv->vec + i)).ind_ipc;
-                    fDesde = (*(vecDiv->vec + i)).periodo_codif;
+                    ipcDesde = ((DIVISION*)(vecDiv->vec) + i) ->ind_ipc;
+                    fDesde = ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif;
                 }
-                if (((( *(vecDiv->vec + i) ).periodo_codif.anio > desde.anio) ||
-                     (( *(vecDiv->vec + i) ).periodo_codif.anio == desde.anio &&
-                      ( *(vecDiv->vec + i) ).periodo_codif.mes > desde.mes)) &&
-                    ipcDesde == 0)
+                if ( ((((DIVISION*)vecDiv->vec + i)->periodo_codif.anio > desde.anio) ||
+                  (((DIVISION*)vecDiv->vec + i)->periodo_codif.anio == desde.anio &&
+                   ((DIVISION*)vecDiv->vec + i)->periodo_codif.mes > desde.mes)) &&
+                 ipcDesde == 0 )
                 {
                     puts("\nNo encontramos la fecha exacta, se usara la mas cercana a ella dentro del periodo...");
-                    ipcDesde = (*(vecDiv->vec + i)).ind_ipc;
-                    fDesde = (*(vecDiv->vec + i)).periodo_codif;
+                    ipcDesde = ((DIVISION*)(vecDiv->vec) + i) ->ind_ipc;
+                    fDesde = ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif;
                 }
             }
             // si la fecha del registro es anterior o igual al "hasta" solicitado
-            if((((*(vecDiv->vec + i)).periodo_codif.anio < hasta.anio)) || ((*(vecDiv->vec + i)).periodo_codif.anio == hasta.anio && (*(vecDiv->vec + i)).periodo_codif.mes <= hasta.mes))
+           if ( ((((DIVISION*)vecDiv->vec + i)->periodo_codif.anio < hasta.anio) ||
+              (((DIVISION*)vecDiv->vec + i)->periodo_codif.anio == hasta.anio &&
+               ((DIVISION*)vecDiv->vec + i)->periodo_codif.mes <= hasta.mes)) )
             {
-                ipcHasta = (*(vecDiv->vec + i)).ind_ipc;
-                fHasta = (*(vecDiv->vec + i)).periodo_codif;
+                ipcHasta = ((DIVISION*)(vecDiv->vec) + i) ->ind_ipc;
+                fHasta = ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif;
             }
         }
         i++;
@@ -361,29 +364,31 @@ int clasifGrupo(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 
     size_t ind = 0;
 
-    char bienes[] = {{"Alimentos y bebidas no alcohólicas"},{" Bebidas alcohólicas y tabaco"},
-                     {" Bebidas alcohólicas y tabaco"},{"Bienes y servicios varios"}
-                     {"Equipamiento y mantenimiento del hogar"}
-                    }
+    int b=0,s=0;
 
-    char servicios[] = {{"Recreación y cultura"},{"Restaurantes y hoteles"},{"Salud"},{"Transporte"},
-                        {"Educación"},{"Comunicación"},{"Comunicación"},
-                        {"Vivienda, agua, electricidad, gas y otros combustibles"}
-                       }
+     char *bienes[] = {
+        "Alimentos y bebidas no alcohólicas",
+        "Bebidas alcohólicas y tabaco",
+        "Prendas de vestir y calzado",
+        "Bienes y servicios varios",
+        "Equipamiento y mantenimiento del hogar"
+    };
+
+    char *servicios[] = {"Recreación y cultura",
+                        "Restaurantes y hoteles","Salud","Transporte",
+                        "Educación","Comunicación","Comunicación",
+                        "Vivienda, agua, electricidad, gas y otros combustibles"
+                       };
 
     while(ind < vecDivision -> ce)
     {
         escribir = 0;
+        division = *((DIVISION*)vecDivision->vec + ind);
 
-        division = *(vecDivision -> vec + ind)
-
-        if(escribir = esBien(division.descrip,bienes))
+        if((escribir = esBien(division.descrip,bienes)))
             setearVarGrupo(&division,&grupo,"Bienes");
-
-
-        if(escribir = esServicio(division.descrip, servicios))
+        else if((escribir = esServicio(division.descrip,servicios)))
             setearVarGrupo(&division,&grupo,"Servicio");
-
 
         if(escribir)
             vectorAgregar(&grupo,vecGrupo,sizeof(GRUPO));
@@ -391,22 +396,11 @@ int clasifGrupo(VecGenerico* vecDivision,VecGenerico* vecGrupo)
         ind++;
     }
 
-
-
-
-
-
-
-
-
-
-
     return TODO_OK;
 }
 
 int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
 {
-
     grupo -> f = division -> periodo_codif;
 
     strcpy(grupo -> descrip,division -> descrip);
@@ -420,7 +414,24 @@ int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
     return TODO_OK;
 }
 
+int esBien(char* descrip, char* bienes[])
+{
+    int i;
+    for(i=0;i<5;i++)
+    {
+        if(strcmpi(descrip, bienes[i])==0)
+            return 1;
+    }
+    return 0;
+}
 
-
-
-
+int esServicio(char* descrip, char* servicios[])
+{
+    int i;
+    for(i=0;i<8;i++)
+    {
+        if(strcmpi(descrip, servicios[i])==0)
+            return 1;
+    }
+    return 0;
+}

@@ -1,6 +1,14 @@
 
 //biblio standar
-#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+
+//biblio
+#include "mem.h"
+
 
 //vectorCrear(dir var tipo VecGenerico, tam de elemento)
 bool vectorCrear(VecGenerico* vec,size_t tam)

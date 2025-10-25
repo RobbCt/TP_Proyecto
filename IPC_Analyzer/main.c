@@ -11,7 +11,8 @@
 //define's
 
 
-void imprimirVec(VecDIVISION* vecDivision);
+void imprimirVec(VecGenerico* vecDivision);
+void imprimirVecGrupo(VecGenerico* vecGrupo);
 
 int main()
 {
@@ -35,38 +36,64 @@ int main()
 
     //imprimirVec(&vecDivision);
 
-    menu_ipc(&vecDivision);
+
+    //menu_ipc(&vecDivision);
 
     clasifGrupo(&vecDivision,&vecGrupo);
 
-    evoIPCporGrupos(&vecGrupo);
+    puts("este es el main");
+    imprimirVecGrupo(&vecGrupo);
+
+    //evoIPCporGrupos(&vecGrupo);
 
     ////////////////////////////////////W
-
     vectorDestruir(&vecDivision);
     fclose(archTxt);
     return 0;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-void imprimirVec(VecDIVISION* vecDivision)
+void imprimirVec(VecGenerico* vecDivision)
 {
-
     int i;
+    DIVISION* vec = (DIVISION*)vecDivision->vec;
     for(i=0;i < vecDivision -> ce;i++)
     {
         printf("\n-------------------------------------------------");
         printf("%s | %s | %s | %.2f | %.2f | %.2f | %s | %s (%d-%d)\n",
-        vecDivision->vec[i].cod,
-        vecDivision->vec[i].descrip,
-        vecDivision->vec[i].clasif,
-        vecDivision->vec[i].ind_ipc,
-        vecDivision->vec[i].v_m_ipc,
-        vecDivision->vec[i].v_i_a_ipc,
-        vecDivision->vec[i].region,
-        vecDivision->vec[i].periodo_codif.periodo,
-        vecDivision->vec[i].periodo_codif.anio,
-        vecDivision->vec[i].periodo_codif.mes);
+        (*(vec + i)).cod,
+        (*(vec + i)).descrip,
+        (*(vec + i)).clasif,
+        (*(vec + i)).ind_ipc,
+        (*(vec + i)).v_m_ipc,
+        (*(vec + i)).v_i_a_ipc,
+        (*(vec + i)).region,
+        (*(vec + i)).periodo_codif.periodo,
+        (*(vec + i)).periodo_codif.anio,
+        (*(vec + i)).periodo_codif.mes);
     }
 
     printf("\n%d registros",i);
 }
+
+void imprimirVecGrupo(VecGenerico* vecGrupo)
+{
+    size_t i;
+    GRUPO* vec = (GRUPO*)vecGrupo->vec;
+
+    for(i = 0; i < vecGrupo->ce; i++)
+    {
+        printf("\n-------------------------------------------------\n");
+        printf("%s | %s | %.2f | %s | %s (%d-%d)\n",
+            (vec + i)->descrip,
+            (vec + i)->grup,
+            (vec + i)->ind_ipc,
+            (vec + i)->region,
+            (vec + i)->f.periodo,   // asumo que FECHA tiene campo 'periodo'
+            (vec + i)->f.anio,
+            (vec + i)->f.mes
+        );
+    }
+
+    printf("\n%zu registros\n", i);
+}
+
