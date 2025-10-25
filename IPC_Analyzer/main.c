@@ -22,10 +22,10 @@ int main()
         exit(1);
     }
 
-    VecDIVISION vecDivision;
+    VecGenerico vecDivision;
     vectorCrear(&vecDivision,sizeof(DIVISION));
 
-    GRUPO vecGrupo;
+    VecGenerico vecGrupo;
     vectorCrear(&vecGrupo,sizeof(GRUPO));
 
 
@@ -37,7 +37,9 @@ int main()
 
     menu_ipc(&vecDivision);
 
-    evoIPCporGrupos(&vecDivision,&vecGrupo);
+    clasifGrupo(&vecDivision,&vecGrupo);
+
+    evoIPCporGrupos(&vecGrupo);
 
     ////////////////////////////////////W
 

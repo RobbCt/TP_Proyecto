@@ -5,14 +5,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <stdbool.h>
+
+//biblio
+#include "mem.h"
 
 //define's
 #define MAXTAMREG 4096
 #define CANTMAXCHAR 17
 #define MESES 12
-#define INCR_FACTOR 2
-#define DEFAULT_CAP 10
 
 typedef struct
 {
@@ -35,13 +35,6 @@ typedef struct
 
 typedef struct
 {
-    void *vec;
-    size_t ce;
-    size_t cap;
-}VecDIVISION; //solo "vec" pq sirve para los vecotres de tipo estructura de division y grupo
-
-typedef struct
-{
     FECHA f;
     char descrip[81];
     double ind_ipc;
@@ -55,7 +48,7 @@ typedef struct
 
 //Primitivas
 
-int divisionesArchTextAVar(FILE*,VecDIVISION*);
+int divisionesArchTextAVar(FILE*,VecGenerico*);
 
 int divisionDecodificarFecha(char*,DIVISION*);
 
@@ -72,20 +65,13 @@ int divisionNormalizarDescr(char*,DIVISION*);
 
 int regTextAVar(DIVISION*,char*);
 
-int ajustarMontoIPC(VecDIVISION*, double, int, FECHA, FECHA);
+int menu_ipc(VecGenerico*);
 
-int menu_ipc(VecDIVISION* );
+int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA);
+
+int clasifGrupo(VecGenerico*,VecGenerico*);
 
 
-
-
-//memoria dianmica
-
-bool vectorCrear(VecDIVISION*);
-
-bool vectorAgregar(DIVISION*, VecDIVISION*);
-
-void vectorDestruir(VecDIVISION*);
 
 
 #endif // FUNCIONES_H_INCLUDED

@@ -2,57 +2,53 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="7" zoom_2="0">
+	<File name="funciones.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="637" topLine="24" />
+			<Cursor1 position="10071" topLine="118" />
 		</Cursor>
 		<Folding>
-			<Collapse line="49" />
-			<Collapse line="53" />
-			<Collapse line="55" />
+			<Collapse line="25" />
+			<Collapse line="36" />
+			<Collapse line="48" />
+			<Collapse line="60" />
+			<Collapse line="94" />
+			<Collapse line="170" />
+			<Collapse line="198" />
+			<Collapse line="220" />
+			<Collapse line="226" />
+			<Collapse line="230" />
+			<Collapse line="239" />
+			<Collapse line="253" />
+			<Collapse line="407" />
 		</Folding>
 	</File>
 	<File name="funciones.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="754" topLine="26" />
+			<Cursor1 position="820" topLine="41" />
 		</Cursor>
 	</File>
-	<File name="funciones.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="7" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="11672" topLine="67" />
+			<Cursor1 position="1116" topLine="37" />
 		</Cursor>
 		<Folding>
+			<Collapse line="55" />
+			<Collapse line="57" />
+		</Folding>
+	</File>
+	<File name="mem.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="66" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="mem.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1006" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="6" />
 			<Collapse line="24" />
-			<Collapse line="35" />
-			<Collapse line="47" />
-			<Collapse line="59" />
-			<Collapse line="75" />
-			<Collapse line="83" />
-			<Collapse line="93" />
-			<Collapse line="147" />
-			<Collapse line="153" />
-			<Collapse line="169" />
-			<Collapse line="180" />
-			<Collapse line="197" />
-			<Collapse line="204" />
-			<Collapse line="219" />
-			<Collapse line="225" />
-			<Collapse line="229" />
-			<Collapse line="238" />
-			<Collapse line="252" />
-			<Collapse line="295" />
-			<Collapse line="307" />
-			<Collapse line="308" />
-			<Collapse line="313" />
-			<Collapse line="317" />
-			<Collapse line="318" />
-			<Collapse line="321" />
-			<Collapse line="329" />
-			<Collapse line="337" />
-			<Collapse line="355" />
-			<Collapse line="420" />
-			<Collapse line="437" />
-			<Collapse line="458" />
+			<Collapse line="46" />
 		</Folding>
 	</File>
 </CodeBlocks_layout_file>

@@ -5,6 +5,7 @@
 
 //biblio
 #include "funciones.h"
+#include "mem.h"
 
 //define's
 #define TODO_OK 0
@@ -72,7 +73,7 @@ FECHA valFecha()
 
 
 //definicon de primitivas
-int divisionesArchTextAVar(FILE* archTxt,VecDIVISION* vecDivision)
+int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
 {
     DIVISION regV; //# de variable tipo struct
     char regT[MAXTAMREG];
@@ -84,7 +85,7 @@ int divisionesArchTextAVar(FILE* archTxt,VecDIVISION* vecDivision)
     {
         regTextAVar(&regV,regT);
 
-        vectorAgregar(&regV,vecDivision);
+        vectorAgregar(&regV,vecDivision,sizeof(DIVISION));
     }
 
     return TODO_OK;
@@ -249,7 +250,7 @@ int divisionNormalizarDescr(char *str, DIVISION* reg)
     return TODO_OK;
 }
 
-int menu_ipc(VecDIVISION* vecDivision)
+int menu_ipc(VecGenerico* vecDivision)
 {
     double monto;
     int region;
@@ -292,7 +293,7 @@ int menu_ipc(VecDIVISION* vecDivision)
 
 //hacerlas andar
 
-int ajustarMontoIPC(VecDIVISION* vecDiv, double monto, int region, FECHA desde, FECHA hasta)
+int ajustarMontoIPC(VecGenerico* vecDiv, double monto, int region, FECHA desde, FECHA hasta)
 {
     double ipcDesde = 0, ipcHasta = 0;
     char *regiones[] = {"Nacional", "GBA", "Pampeana", "Cuyo", "Noroeste", "Noreste", "Patagonia"};
@@ -352,7 +353,7 @@ int ajustarMontoIPC(VecDIVISION* vecDiv, double monto, int region, FECHA desde, 
     return TODO_OK;
 }
 
-int evoIPCporGrupos(VecDIVISION* vecDivision,VecDIVISION* vecGrupo)
+int clasifGrupo(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 {
     DIVISION division;
     GRUPO grupo;
@@ -372,96 +373,53 @@ int evoIPCporGrupos(VecDIVISION* vecDivision,VecDIVISION* vecGrupo)
 
     while(ind < vecDivision -> ce)
     {
+        escribir = 0;
 
         division = *(vecDivision -> vec + ind)
 
-        if(escribir = esBien(division.descrip, bienes))
-        {
-            grupo.f = division.periodo_codif;
+        if(escribir = esBien(division.descrip,bienes))
+            setearVarGrupo(&division,&grupo,"Bienes");
 
-            strcpy(grupo.descrip,division.descrip);
-
-            grupo.ind_ipc = division.ind_ipc;
-
-            strcpy(grupo.region,division.region);
-
-            strcpy(grupo.grup,"Bienes");
-        }
 
         if(escribir = esServicio(division.descrip, servicios))
-        {
-            grupo.f = division.periodo_codif;
+            setearVarGrupo(&division,&grupo,"Servicio");
 
-            strcpy(grupo.descrip,division.descrip);
-
-            grupo.ind_ipc = division.ind_ipc;
-
-            strcpy(grupo.region,division.region);
-
-            strcpy(grupo.grup,"Servicio");
-        }
 
         if(escribir)
             vectorAgregar(&grupo,vecGrupo,sizeof(GRUPO));
 
-
-        escribir = 0;
         ind++;
     }
+
+
+
+
+
+
+
+
+
+
+
+    return TODO_OK;
 }
 
-
-
-//#######################################################################################################################
-
-
-//memoria dinamica
-//hacerlas totalmente genericas
-bool vectorCrear(VecDIVISION* vec,size_t tam)
+int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
 {
-    vec->vec = malloc(tam * DEFAULT_CAP);
 
-    if(!(vec->vec))
-    {
-        vec->cap = 0;
-        vec->ce = 0;
-        return false;
-    }
+    grupo -> f = division -> periodo_codif;
 
-    vec->ce = 0;
-    vec->cap = DEFAULT_CAP;
+    strcpy(grupo -> descrip,division -> descrip);
 
-    return true;
+    grupo -> ind_ipc = division -> ind_ipc;
+
+    strcpy(grupo -> region,division -> region);
+
+    strcpy(grupo -> grup,categoria);
+
+    return TODO_OK;
 }
 
-bool vectorAgregar(void* elem, VecDIVISION* vec, size_t tam)
-{
-    if (vec->ce >= vec->cap)
-    {
-        // Redimensionar
-        size_t nueva_cap = vec->cap * INCR_FACTOR;
-        void* temporal = realloc(vec->vec, tam * nueva_cap);
-
-        if (!temporal)
-            return false;
-
-        vec->vec = temporal;
-        vec->cap = nueva_cap;
-    }
-
-    memcpy((char*)vec->vec + vec->ce * tam, elem, tam);
-    vec->ce++;
-
-    return true;
-}
-
-void vectorDestruir(VecDIVISION* vec)
-{
-    free(vec -> vec);
-    vec->vec = NULL;
-    vec->ce = 0;
-    vec->cap = 0;
-}
 
 
 

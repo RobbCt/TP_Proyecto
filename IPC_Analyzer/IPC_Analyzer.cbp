@@ -38,6 +38,10 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="mem.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mem.h" />
 		<Extensions>
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />
