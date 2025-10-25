@@ -21,8 +21,7 @@ int esBien(char*, char*[]);
 int esServicio(char*, char*[]);
 int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
 int setearVarGrupo(DIVISION*,GRUPO*,char*);
-
-
+int ejecutarBurbujeo(GRUPO*, int);
 
 
 
@@ -140,6 +139,54 @@ int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
     return TODO_OK;
 }
 
+int ordPorReg(VecGenerico *vec)
+{
+    GRUPO *reg = (GRUPO*) vec->vec;
+    int pos = 0, cortar = 0;
+    while(pos < vec->ce && cortar == 0)
+    {
+        if(strcmpi((reg+pos)->grup, "Bienes") == 0)
+            pos++;
+
+        else
+            cortar=1;
+
+    }
+
+
+    ejecutarBurbujeo(vec -> vec, pos);//Orden para los bienes
+
+    ejecutarBurbujeo(reg + pos, vec->ce - pos);//Orden para los servicios
+
+    return TODO_OK;
+}
+
+int ejecutarBurbujeo(GRUPO *vec, int lim)
+{
+    GRUPO aux;
+
+    for (int i = 0; i < lim - 1; i++)
+    {
+        for (int j = i + 1; j < lim; j++)
+        {
+            // Comparar regiones con aritmética de punteros
+            if (strcmpi((vec + i)->region, (vec + j)->region) > 0)
+            {
+                // Intercambiar estructuras completas
+                aux = *(vec + i);
+                *(vec + i) = *(vec + j);
+                *(vec + j) = aux;
+            }
+        }
+    }
+
+    return TODO_OK;
+}
+
+
+
+
+
 
 
 //definicon de primitivas
@@ -239,7 +286,7 @@ int regTextAVar(DIVISION *regV, char *regT)
 
 int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
 {
-    int vecCor[9] = {7,4,9,8,0,6,1,3,2};
+    int vecCor[10] = {7,4,9,8,0,6,1,3,2,5};
     int cifra[6];
     int indCifra, indCor;
 
@@ -458,6 +505,17 @@ int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 
     return TODO_OK;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

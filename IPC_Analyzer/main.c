@@ -16,7 +16,7 @@ void imprimirVecGrupo(VecGenerico* vecGrupo);
 
 int main()
 {
-    FILE *archTxt = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
+    FILE *archTxt = fopen("../Data/serie_ipc_divisiones.csv","rt");
 
     if(!archTxt){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
@@ -36,15 +36,13 @@ int main()
 
     //imprimirVec(&vecDivision);
 
-
     //menu_ipc(&vecDivision);
 
     grupoClasif(&vecDivision,&vecGrupo);
 
-    puts("este es el main");
-    imprimirVecGrupo(&vecGrupo);
+    ordPorReg(&vecGrupo);
 
-    //evoIPCporGrupos(&vecGrupo);
+    imprimirVecGrupo(&vecGrupo);
 
     ////////////////////////////////////W
     vectorDestruir(&vecDivision);
@@ -94,6 +92,6 @@ void imprimirVecGrupo(VecGenerico* vecGrupo)
         );
     }
 
-    printf("\n%zu registros\n", i);
+    printf("\n%lu registros\n",(unsigned long) i);
 }
 

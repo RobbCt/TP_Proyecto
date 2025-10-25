@@ -69,6 +69,9 @@ int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA);
 
 int grupoClasif(VecGenerico*,VecGenerico*);
 
+int ordPorReg(VecGenerico*);
+
+
 
 
 

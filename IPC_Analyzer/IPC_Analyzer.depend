@@ -34,19 +34,20 @@
 	<windows.h>
 	"funciones.h"
 
-1761335119 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
+1761427525 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
 	"funciones.h"
+	"mem.h"
 
-1761335119 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
+1761427525 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.h
 	<string.h>
 	<stdio.h>
 	<ctype.h>
-	<stdbool.h>
+	"mem.h"
 
-1761335119 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
+1761427333 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -122,5 +123,15 @@
 	"mem.h"
 
 1761422542 c:\users\hered\onedrive\desktop\topic_tp\tp_proyecto\ipc_analyzer\mem.h
+	<stdbool.h>
+
+1761424358 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\mem.c
+	<stddef.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"mem.h"
+
+1761424358 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\mem.h
 	<stdbool.h>
 
