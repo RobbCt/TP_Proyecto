@@ -42,6 +42,8 @@ int main()
 
     ordPorReg(&vecGrupo);
 
+    ordFechaDeRegion(&vecGrupo);
+
     imprimirVecGrupo(&vecGrupo);
 
     ////////////////////////////////////W
@@ -49,7 +51,7 @@ int main()
     fclose(archTxt);
     return 0;
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void imprimirVec(VecGenerico* vecDivision)
 {
     int i;
@@ -80,8 +82,8 @@ void imprimirVecGrupo(VecGenerico* vecGrupo)
 
     for(i = 0; i < vecGrupo->ce; i++)
     {
-        printf("\n-------------------------------------------------\n");
-        printf("%s | %s | %.2f | %s | %s (%d-%d)\n",
+        printf("\n---------------------------------------------------------------------------------------------------------------------------------\n");
+        printf("%81s | %10s | %.2f | %30s | %s (%d-%d)\n",
             (vec + i)->descrip,
             (vec + i)->grup,
             (vec + i)->ind_ipc,

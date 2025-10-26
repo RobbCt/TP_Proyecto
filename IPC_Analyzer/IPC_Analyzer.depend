@@ -135,3 +135,63 @@
 1761424358 c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\mem.h
 	<stdbool.h>
 
+1761505087 source:c:\users\alexi\desktop\tp_proyecto-main\ipc_analyzer\funciones.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	"funciones.h"
+	"mem.h"
+
+1761505087 c:\users\alexi\desktop\tp_proyecto-main\ipc_analyzer\funciones.h
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+	"mem.h"
+
+1761427588 c:\users\alexi\desktop\tp_proyecto-main\ipc_analyzer\mem.h
+	<stdbool.h>
+
+1761505442 source:c:\users\alexi\desktop\tp_proyecto-main\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	"funciones.h"
+
+1761427588 source:c:\users\alexi\desktop\tp_proyecto-main\ipc_analyzer\mem.c
+	<stddef.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"mem.h"
+
+1761505087 source:c:\users\alexi\desktop\copiadatos\tp_proyecto-main-copiaedit\ipc_analyzer\funciones.c
+	<stdlib.h>
+	<string.h>
+	<stdio.h>
+	"funciones.h"
+	"mem.h"
+
+1761505087 c:\users\alexi\desktop\copiadatos\tp_proyecto-main-copiaedit\ipc_analyzer\funciones.h
+	<string.h>
+	<stdio.h>
+	<ctype.h>
+	"mem.h"
+
+1761427588 c:\users\alexi\desktop\copiadatos\tp_proyecto-main-copiaedit\ipc_analyzer\mem.h
+	<stdbool.h>
+
+1761427588 source:c:\users\alexi\desktop\copiadatos\tp_proyecto-main-copiaedit\ipc_analyzer\mem.c
+	<stddef.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"mem.h"
+
+1761506262 source:c:\users\alexi\desktop\copiadatos\tp_proyecto-main-copiaedit\ipc_analyzer\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<windows.h>
+	"funciones.h"
+

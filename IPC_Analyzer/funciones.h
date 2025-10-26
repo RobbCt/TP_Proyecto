@@ -71,6 +71,8 @@ int grupoClasif(VecGenerico*,VecGenerico*);
 
 int ordPorReg(VecGenerico*);
 
+int ordFechaDeRegion(VecGenerico*);
+
 
 
 

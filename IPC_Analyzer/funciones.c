@@ -22,6 +22,7 @@ int esServicio(char*, char*[]);
 int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
 int setearVarGrupo(DIVISION*,GRUPO*,char*);
 int ejecutarBurbujeo(GRUPO*, int);
+int OrdenarFecha(GRUPO*, int);
 
 
 
@@ -183,6 +184,57 @@ int ejecutarBurbujeo(GRUPO *vec, int lim)
     return TODO_OK;
 }
 
+int ordFechaDeRegion(VecGenerico *vec)
+{
+    GRUPO *reg = (GRUPO*) vec->vec;
+    char regAct[30] = "";
+    int pos = 0;
+
+    while (pos < vec->ce)
+    {
+        // Marca el inicio del grupo
+        GRUPO *ini = reg;
+        int count = 0;
+
+        strcpy(regAct, reg->region);
+
+        // Recorremos todos los elementos de esta misma región
+        while (pos < vec->ce && strcmpi(regAct, reg->region) == 0)
+        {
+            pos++;
+            reg++;
+            count++;
+        }
+
+        // Ordenamos solo ese grupo
+        OrdenarFecha(ini, count);
+    }
+
+    return TODO_OK;
+}
+
+int OrdenarFecha(GRUPO *vec, int cant)
+{
+    GRUPO aux;
+
+    for (int i = 0; i < cant - 1; i++)
+    {
+        for (int j = i + 1; j < cant; j++)
+        {
+            // Comparar fechas (anio, luego mes)
+            if ((vec + i)->f.anio > (vec + j)->f.anio ||
+               ((vec + i)->f.anio == (vec + j)->f.anio &&
+                (vec + i)->f.mes > (vec + j)->f.mes))
+            {
+                aux = *(vec + i);
+                *(vec + i) = *(vec + j);
+                *(vec + j) = aux;
+            }
+        }
+    }
+
+    return TODO_OK;
+}
 
 
 
