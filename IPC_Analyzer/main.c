@@ -59,7 +59,7 @@ void imprimirVec(VecGenerico* vecDivision)
     for(i=0;i < vecDivision -> ce;i++)
     {
         printf("\n-------------------------------------------------");
-        printf("%s | %s | %s | %.2f | %.2f | %.2f | %s | %s (%d-%d)\n",
+        printf("%s|%s|%s|%.2f|%.2f|%.2f|%s|%s (%d-%d)\n",
         (*(vec + i)).cod,
         (*(vec + i)).descrip,
         (*(vec + i)).clasif,

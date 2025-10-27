@@ -12,7 +12,8 @@
 #define TODO_MAL 1
 
 
-
+char* IniCampConComillas(char*);
+char* IniCampSinComillas(char*);
 char* dirUltComillas(char *);
 int comaApunto(char *);
 int valInt(int,int);
@@ -27,15 +28,35 @@ int OrdenarFecha(GRUPO*, int);
 
 
 //utilitarias
-char* dirUltComillas(char *TrozoRegT)
-{
-    char *uComillas;
-    uComillas = strrchr(TrozoRegT, '"');
 
-    if(uComillas == NULL)
+char* IniCampConComillas(char* regT)
+{
+    char* uComillas;
+    uComillas = strrchr(regT, '"');
+
+    if(!uComillas)
         return NULL;
 
-    return uComillas;
+    *uComillas = '\0';
+
+    uComillas = strrchr(regT, '"');
+
+    if(!uComillas)
+        return NULL;
+
+    return uComillas + 1;
+}
+
+char* IniCampSinComillas(char* regT)
+{
+    char* iniCamp;
+
+    iniCamp = strrchr(regT,';');
+
+    if(!iniCamp)
+        return NULL;
+
+    return iniCamp + 1;
 }
 
 int comaApunto(char *cadena)
@@ -262,78 +283,72 @@ int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
 
 int regTextAVar(DIVISION *regV, char *regT)
 {
-    char *pFinCamp, *pIniCamp;
+    char *pIniCamp;
 
-    pFinCamp = dirUltComillas(regT); //fecha
-    *pFinCamp = '\0';
-    pIniCamp = dirUltComillas(regT) + 1;
-
+    pIniCamp = IniCampConComillas(regT); //PERIODO CODIF
     divisionDecodificarFecha(pIniCamp,regV);
     divisionFechDecodAStr(regV);
 
-    *(dirUltComillas(regT)) = '\0'; //o retroceder 1
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-    pFinCamp = dirUltComillas(regT); //region
-    *pFinCamp = '\0';
-    pIniCamp = dirUltComillas(regT) + 1;
 
+
+    pIniCamp = IniCampConComillas(regT); //REGION
     divisionSetString(pIniCamp,regV -> region);
 
-    *(dirUltComillas(regT)) = '\0';
-
-
-     pFinCamp = strrchr(regT,';'); //v_i_a_IPC
-     *pFinCamp = '\0';
-     pIniCamp = strrchr(regT,';') + 1;
-
-     divisionSetDouble(pIniCamp,&regV -> v_i_a_ipc);
-
-     pFinCamp = strrchr(regT,';'); //v_m_IPC
-     *pFinCamp = '\0';
-     pIniCamp = strrchr(regT,';') + 1;
-
-     divisionSetDouble(pIniCamp,&regV -> v_m_ipc);
-
-     pFinCamp = strrchr(regT,';'); //Indice_IPC
-     *pFinCamp = '\0';
-     pIniCamp = strrchr(regT,';') + 1;
-
-     divisionSetDouble(pIniCamp,&regV -> ind_ipc) ;
-
-     pFinCamp = strrchr(regT,'"');
-     *pFinCamp = '\0';
-
-
-     pIniCamp = dirUltComillas(regT) + 1; //clasificador
-     divisionSetString(pIniCamp,regV -> clasif);
-
-     *(dirUltComillas(regT)) = '\0';
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
 
 
-     pFinCamp = strrchr(regT, ';'); //version agregada de la descripcion
-     *pFinCamp = '\0';
-     pIniCamp = strrchr(regT, ';');
-     if(*(pIniCamp + 1) == '"')//Evaluo si tiene comillas o si es el NA
-     {
-         *(pFinCamp - 1) = '\0';
-         divisionNormalizarDescr(pIniCamp + 2,regV);
-         *(dirUltComillas(regT)) = '\0';
-     }
-     else
-     {
-         divisionNormalizarDescr(pIniCamp + 1, regV);
-         *pIniCamp = '\0';
-     }
+    pIniCamp = IniCampSinComillas(regT); //v_i_a_IPC
+    divisionSetDouble(pIniCamp,&regV -> v_i_a_ipc);
 
-     pFinCamp = strrchr(regT,';'); //codigo
-     *(dirUltComillas(regT)) = '\0';
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-     pIniCamp = dirUltComillas(regT) + 1;
 
-     divisionSetString(pIniCamp,regV -> cod);
 
-     return TODO_OK;
+    pIniCamp = IniCampSinComillas(regT); //v_m_IPC
+    divisionSetDouble(pIniCamp,&regV -> v_m_ipc);
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+
+
+    pIniCamp = IniCampSinComillas(regT); //Indice_IPC
+    divisionSetDouble(pIniCamp,&regV -> ind_ipc) ;
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+
+
+    pIniCamp = IniCampConComillas(regT); //CLASIFICADOR
+    divisionSetString(pIniCamp,regV -> clasif);
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+
+
+    if(!strrchr(regT, ';'))
+        return TODO_MAL;
+
+    if(*(strrchr(regT,';') + 1) == '"') //DESCRIPCION
+        pIniCamp = IniCampConComillas(regT);
+
+    else
+        pIniCamp = IniCampSinComillas(regT);
+
+
+    divisionNormalizarDescr(pIniCamp,regV);
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+
+
+    pIniCamp = IniCampConComillas(regT); //CODIGO
+    divisionSetString(pIniCamp,regV -> cod);
+
+
+    return  TODO_OK;
 }
 
 int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
