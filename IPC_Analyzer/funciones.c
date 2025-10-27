@@ -13,20 +13,18 @@
 
 char* IniCampConComillas(char*);
 char* IniCampSinComillas(char*);
-char* dirUltComillas(char *);
 int comaApunto(char *);
 int valInt(int,int);
 double valDoub(int li);
 FECHA valFecha();
 int esBien(char*, char*[]);
 int esServicio(char*, char*[]);
-int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
 int setearVarGrupo(DIVISION*,GRUPO*,char*);
-int ejecutarBurbujeo(GRUPO*, int);
-int OrdenarFecha(GRUPO*, int);
+
+
+
 
 //utilitarias
-
 char* IniCampConComillas(char* regT)
 {
     char* uComillas;
@@ -69,6 +67,20 @@ int comaApunto(char *cadena)
     return TODO_OK;
 }
 
+int valInt(int li, int ls)
+{
+    int dato;
+
+    scanf("%d",&dato);
+    while(dato < li || dato > ls)
+    {
+        printf("reingresar: ");
+        scanf("%d",&dato);
+    }
+
+    return dato;
+}
+
 double valDoub(int li)
 {
     double x;
@@ -93,34 +105,6 @@ FECHA valFecha()
     }while((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12));
 
     return x;
-}
-
-int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
-{
-    if(vec->ce == vec->cap)
-        if(!redimensionarVector(vec, vec->cap * INCR_FACTOR, tam))
-            return TODO_MAL;
-
-
-    GRUPO* i = (GRUPO*) vec -> vec;
-    GRUPO* j = i + vec->ce - 1;
-
-    while(i <= j && strcmpi(elem->grup, i -> grup) > 0)
-        i++;
-
-
-    // (opcional) para duplicados:
-    // if (i <= j && strcmpi(elem->grup, i->grup) == 0)
-    //     return TODO_MAL;
-
-    for(; i <= j; j--){
-        *(j + 1) = *j;
-    }
-
-    *i = *elem;
-    vec->ce++;
-
-    return TODO_OK;
 }
 
 int esBien(char* descrip, char* bienes[])
@@ -160,101 +144,9 @@ int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
     return TODO_OK;
 }
 
-int ordPorReg(VecGenerico *vec)
-{
-    GRUPO *reg = (GRUPO*) vec->vec;
-    int pos = 0, cortar = 0;
-    while(pos < vec->ce && cortar == 0)
-    {
-        if(strcmpi((reg+pos)->grup, "Bienes") == 0)
-            pos++;
-
-        else
-            cortar=1;
-
-    }
 
 
-    ejecutarBurbujeo(vec -> vec, pos);//Orden para los bienes
 
-    ejecutarBurbujeo(reg + pos, vec->ce - pos);//Orden para los servicios
-
-    return TODO_OK;
-}
-
-int ejecutarBurbujeo(GRUPO *vec, int lim)
-{
-    GRUPO aux;
-
-    for (int i = 0; i < lim - 1; i++)
-    {
-        for (int j = i + 1; j < lim; j++)
-        {
-            // Comparar regiones con aritmética de punteros
-            if (strcmpi((vec + i)->region, (vec + j)->region) > 0)
-            {
-                // Intercambiar estructuras completas
-                aux = *(vec + i);
-                *(vec + i) = *(vec + j);
-                *(vec + j) = aux;
-            }
-        }
-    }
-
-    return TODO_OK;
-}
-
-int ordFechaDeRegion(VecGenerico *vec)
-{
-    GRUPO *reg = (GRUPO*) vec->vec;
-    char regAct[30] = "";
-    int pos = 0;
-
-    while (pos < vec->ce)
-    {
-        // Marca el inicio del grupo
-        GRUPO *ini = reg;
-        int count = 0;
-
-        strcpy(regAct, reg->region);
-
-        // Recorremos todos los elementos de esta misma región
-        while (pos < vec->ce && strcmpi(regAct, reg->region) == 0)
-        {
-            pos++;
-            reg++;
-            count++;
-        }
-
-        // Ordenamos solo ese grupo
-        OrdenarFecha(ini, count);
-    }
-
-    return TODO_OK;
-}
-
-int OrdenarFecha(GRUPO *vec, int cant)
-{
-    GRUPO aux;
-
-    for (int i = 0; i < cant - 1; i++)
-    {
-        for (int j = i + 1; j < cant; j++)
-        {
-            // Comparar fechas (anio, luego mes)
-            if ((vec + i)->f.anio > (vec + j)->f.anio ||
-               ((vec + i)->f.anio == (vec + j)->f.anio &&
-                (vec + i)->f.mes > (vec + j)->f.mes))
-            {
-                aux = *(vec + i);
-                *(vec + i) = *(vec + j);
-                *(vec + j) = aux;
-            }
-        }
-    }
-
-    return TODO_OK;
-}
 
 //definicon de primitivas
 int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
@@ -273,60 +165,6 @@ int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
     }
 
     return TODO_OK;
-}
-
-int regTextADiv(DIVISION *regV, char *regT)
-{
-    char *pIniCamp;
-
-    pIniCamp = IniCampConComillas(regT); //PERIODO CODIF
-    divisionDecodificarFecha(pIniCamp,regV);
-    divisionFechDecodAStr(regV);
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    pIniCamp = IniCampConComillas(regT); //REGION
-    setString(pIniCamp,regV -> region);
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    pIniCamp = IniCampSinComillas(regT); //v_i_a_IPC
-    setDouble(pIniCamp,&regV -> v_i_a_ipc);
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    pIniCamp = IniCampSinComillas(regT); //v_m_IPC
-    setDouble(pIniCamp,&regV -> v_m_ipc);
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    pIniCamp = IniCampSinComillas(regT); //Indice_IPC
-    setDouble(pIniCamp,&regV -> ind_ipc) ;
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    pIniCamp = IniCampConComillas(regT); //CLASIFICADOR
-    setString(pIniCamp,regV -> clasif);
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    if(!strrchr(regT, ';'))
-        return TODO_MAL;
-
-    if(*(strrchr(regT,';') + 1) == '"') //DESCRIPCION
-        pIniCamp = IniCampConComillas(regT);
-
-    else
-        pIniCamp = IniCampSinComillas(regT);
-
-    divisionNormalizarDescr(pIniCamp,regV);
-
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-    pIniCamp = IniCampConComillas(regT); //CODIGO
-    setString(pIniCamp,regV -> cod);
-
-    return  TODO_OK;
 }
 
 int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
@@ -357,7 +195,7 @@ int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
     return TODO_OK;
 }
 
-int divisionFechDecodAStr(DIVISION* regV)//P2
+int divisionFechDecodAStr(DIVISION* regV)
 {
     char *formatoPerido = regV -> periodo.per,
          anioStr[20]; //vec para guardar anio(int) como anioStr(string)
@@ -379,25 +217,6 @@ int divisionFechDecodAStr(DIVISION* regV)//P2
     return TODO_OK;
 }
 
-int setString(char *str,char *campo)
-{
-    strcpy(campo,str);
-    return TODO_OK;
-}
-
-int setDouble(char *str, double *campo)
-{
-    if (*str == 'N' && *(str+1) == 'A')
-        *campo = 0;
-    else
-    {
-        comaApunto(str);
-        sscanf(str,"%lf",campo);
-    }
-
-    return TODO_OK;
-}
-
 int divisionNormalizarDescr(char *str, DIVISION* reg)
 {
     char *temp = str; //no perder el inicio del str
@@ -408,6 +227,83 @@ int divisionNormalizarDescr(char *str, DIVISION* reg)
         *temp = tolower(*temp);
 
     strcpy(reg->descrip, str);
+
+    return TODO_OK;
+}
+
+int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
+{
+    APERTURA regAp; //# de variable tipo struct
+    char regT[MAXTAMREG];
+
+    //saltar encabezado
+    fgets(regT,MAXTAMREG,archTxt);
+
+    while(fgets(regT,MAXTAMREG,archTxt))
+    {
+        regTextAAp(&regAp,regT);
+
+        vectorAgregar(&regAp,vecAp,sizeof(APERTURA));
+    }
+
+    return TODO_OK;
+}
+
+int aperturaConversionFecha(char* fechaStr, APERTURA* regAp)
+{
+    int cifra[6], indCifra;
+    char* periodo= regAp->periodo.per;
+
+    // Convertir cada carácter del string a dígito numérico (copy paste de otra funcion pol las dudash¿)
+    for (indCifra = 0; indCifra < 6; indCifra++)
+        *(cifra+indCifra) = *(fechaStr+indCifra) - '0';  // Convertir char a int (diferencia en ASCII)
+
+    // Guardar fecha en estructura
+    regAp -> periodo.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
+    regAp -> periodo.mes = *(cifra+4)*10 + *(cifra+5);
+
+    sprintf(periodo, "%04d-%02d-01", regAp->periodo.anio, regAp->periodo.mes);
+
+    return TODO_OK;
+}
+
+int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
+{
+    DIVISION division;
+    GRUPO grupo;
+    int escribir;
+
+    size_t ind = 0;
+
+     char *bienes[] = {
+        "Alimentos y bebidas no alcohólicas",
+        "Bebidas alcohólicas y tabaco",
+        "Prendas de vestir y calzado",
+        "Bienes y servicios varios",
+        "Equipamiento y mantenimiento del hogar"
+    };
+
+    char *servicios[] = {"Recreación y cultura",
+                        "Restaurantes y hoteles","Salud","Transporte",
+                        "Educación","Comunicación","Comunicación",
+                        "Vivienda, agua, electricidad, gas y otros combustibles"
+                       };
+
+    while(ind < vecDivision -> ce)
+    {
+        escribir = 0;
+        division = *((DIVISION*)vecDivision->vec + ind);
+
+        if((escribir = esBien(division.descrip,bienes)))
+            setearVarGrupo(&division,&grupo,"Bienes");
+        else if((escribir = esServicio(division.descrip,servicios)))
+            setearVarGrupo(&division,&grupo,"Servicio");
+
+        if(escribir)
+            vectorInsertOrdPorCamp(&grupo,vecGrupo,sizeof(GRUPO));
+
+        ind++;
+    }
 
     return TODO_OK;
 }
@@ -447,6 +343,7 @@ int menu_ipc(VecGenerico* vec, int opc)
 
     return TODO_OK;
 }
+
 int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FECHA hasta, int opc)
 {
     double ipcDesde = 0, ipcHasta = 0;
@@ -548,72 +445,94 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     return TODO_OK;
 }
 
-int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
+
+
+
+//definicion de primitivasn't
+
+int regTextADiv(DIVISION *regV, char *regT)
 {
-    DIVISION division;
-    GRUPO grupo;
-    int escribir;
+    char *pIniCamp;
 
-    size_t ind = 0;
+    pIniCamp = IniCampConComillas(regT); //PERIODO CODIF
+    divisionDecodificarFecha(pIniCamp,regV);
+    divisionFechDecodAStr(regV);
 
-     char *bienes[] = {
-        "Alimentos y bebidas no alcohólicas",
-        "Bebidas alcohólicas y tabaco",
-        "Prendas de vestir y calzado",
-        "Bienes y servicios varios",
-        "Equipamiento y mantenimiento del hogar"
-    };
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-    char *servicios[] = {"Recreación y cultura",
-                        "Restaurantes y hoteles","Salud","Transporte",
-                        "Educación","Comunicación","Comunicación",
-                        "Vivienda, agua, electricidad, gas y otros combustibles"
-                       };
+    pIniCamp = IniCampConComillas(regT); //REGION
+    setString(pIniCamp,regV -> region);
 
-    while(ind < vecDivision -> ce)
-    {
-        escribir = 0;
-        division = *((DIVISION*)vecDivision->vec + ind);
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-        if((escribir = esBien(division.descrip,bienes)))
-            setearVarGrupo(&division,&grupo,"Bienes");
-        else if((escribir = esServicio(division.descrip,servicios)))
-            setearVarGrupo(&division,&grupo,"Servicio");
+    pIniCamp = IniCampSinComillas(regT); //v_i_a_IPC
+    setDouble(pIniCamp,&regV -> v_i_a_ipc);
 
-        if(escribir)
-            vectorInsertOrdPorCamp(&grupo,vecGrupo,sizeof(GRUPO));
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-        ind++;
-    }
+    pIniCamp = IniCampSinComillas(regT); //v_m_IPC
+    setDouble(pIniCamp,&regV -> v_m_ipc);
 
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+    pIniCamp = IniCampSinComillas(regT); //Indice_IPC
+    setDouble(pIniCamp,&regV -> ind_ipc) ;
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+    pIniCamp = IniCampConComillas(regT); //CLASIFICADOR
+    setString(pIniCamp,regV -> clasif);
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+    if(!strrchr(regT, ';'))
+        return TODO_MAL;
+
+    if(*(strrchr(regT,';') + 1) == '"') //DESCRIPCION
+        pIniCamp = IniCampConComillas(regT);
+
+    else
+        pIniCamp = IniCampSinComillas(regT);
+
+    divisionNormalizarDescr(pIniCamp,regV);
+
+    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+
+    pIniCamp = IniCampConComillas(regT); //CODIGO
+    setString(pIniCamp,regV -> cod);
+
+    return  TODO_OK;
+}
+
+int setString(char *str,char *campo)
+{
+    strcpy(campo,str);
     return TODO_OK;
 }
 
-int conversionFecha(char* fechaStr, APERTURA* regV)
+int setDouble(char *str, double *campo)
 {
-    int cifra[6], indCifra;
-    char* periodo= regV->periodo.per;
-
-    // Convertir cada carácter del string a dígito numérico (copy paste de otra funcion pol las dudash¿)
-    for (indCifra = 0; indCifra < 6; indCifra++)
-        *(cifra+indCifra) = *(fechaStr+indCifra) - '0';  // Convertir char a int (diferencia en ASCII)
-
-    // Guardar fecha en estructura
-    regV -> periodo.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
-    regV -> periodo.mes = *(cifra+4)*10 + *(cifra+5);
-
-    sprintf(periodo, "%04d-%02d-01", regV->periodo.anio, regV->periodo.mes);
+    if (*str == 'N' && *(str+1) == 'A')
+        *campo = 0;
+    else
+    {
+        comaApunto(str);
+        sscanf(str,"%lf",campo);
+    }
 
     return TODO_OK;
 }
 
 int regTextAAp(APERTURA *regAp, char *regT)
 {
-    char *pIniCamp;
+    char *pIniCamp, *finReg;
 
-   // *(strrchr(regT, ';'))='\0';
+    if(!(finReg = strrchr(regT,'\n')))
+        return TODO_MAL;
 
-    pIniCamp= IniCampSinComillas(regT);//region
+    *finReg = '\0';
+
+    pIniCamp = IniCampSinComillas(regT);//region
 
     setString(pIniCamp, regAp->region);
 
@@ -639,7 +558,7 @@ int regTextAAp(APERTURA *regAp, char *regT)
 
     pIniCamp= IniCampSinComillas(regT);//periodo
 
-    conversionFecha(pIniCamp, regAp);
+    aperturaConversionFecha(pIniCamp, regAp);
 
     *(strrchr(regT, ';'))='\0';
 
@@ -655,28 +574,148 @@ int regTextAAp(APERTURA *regAp, char *regT)
 
     *(strrchr(regT, ';'))='\0';
 
-    pIniCamp=regT;
+    pIniCamp = regT;
 
     setString(pIniCamp, regAp->cod);
 
     return  TODO_OK;
 }
 
-int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
+int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
 {
-    APERTURA regV; //# de variable tipo struct
-    char regT[MAXTAMREG];
+    if(vec->ce == vec->cap)
+        if(!redimensionarVector(vec, vec->cap * INCR_FACTOR, tam))
+            return TODO_MAL;
 
-    //saltar encabezado
-    fgets(regT,MAXTAMREG,archTxt);
 
-    while(fgets(regT,MAXTAMREG,archTxt))
+    GRUPO* i = (GRUPO*) vec -> vec;
+    GRUPO* j = i + vec->ce - 1;
+
+    while(i <= j && strcmpi(elem->grup, i -> grup) > 0)
+        i++;
+
+
+    // (opcional) para duplicados:
+    // if (i <= j && strcmpi(elem->grup, i->grup) == 0)
+    //     return TODO_MAL;
+
+    for(; i <= j; j--){
+        *(j + 1) = *j;
+    }
+
+    *i = *elem;
+    vec->ce++;
+
+    return TODO_OK;
+}
+
+
+
+//ordenamiento
+int ordPorReg(VecGenerico *vec)
+{
+    GRUPO *reg = (GRUPO *)vec->vec;
+    int pos = 0, cortar = 0;
+
+    while(pos < vec->ce && cortar == 0)
     {
-        regTextAAp(&regV,regT);
+        if(strcmpi((reg + pos)->grup, "Bienes") == 0)
+            pos++;
+        else
+            cortar = 1;
+    }
 
-        vectorAgregar(&regV,vecAp,sizeof(APERTURA));
+    // Orden para bienes y servicios
+    burbujeo(vec->vec, pos, sizeof(GRUPO), cmpRegion);
+    burbujeo(reg + pos, vec->ce - pos, sizeof(GRUPO), cmpRegion);
+
+    return TODO_OK;
+}
+
+int ordFechaDeRegion(VecGenerico *vec)
+{
+    GRUPO *reg = (GRUPO *)vec->vec;
+    char regAct[30] = "";
+    int pos = 0;
+
+    while (pos < vec->ce)
+    {
+        GRUPO *ini = reg; //guardo el reg de la reg actual (base del ordenam)
+        int lim = 0;
+
+        strcpy(regAct, reg->region);
+
+        while (pos < vec->ce && strcmpi(regAct, reg->region) == 0)
+        {
+            pos++;
+            reg++;
+            lim++;
+        }
+
+        burbujeo(ini, lim, sizeof(GRUPO), cmpFecha);
     }
 
     return TODO_OK;
 }
+
+//Funcion generica (espero xd) de burbujeo god :3
+int burbujeo(void *vec, int lim, size_t tamElem, Cmp fDeCmp)
+{
+    void *aux = malloc(tamElem);//con malloc por no saber el tipo de dato
+    if(!aux)
+        return TODO_MAL;
+
+    char *base = (char *)vec;//casteo para moverme n bytes
+
+    for (int i = 0; i < lim - 1; i++)
+    {
+        for (int j = 0; j < lim - 1 - i; j++)
+        {
+            //defino los elem a comparar
+            void *a = base + j * tamElem;
+            void *b = base + (j + 1) * tamElem;
+
+            //a puro memcpy por ser puros voids* xd (hecho en base al resultado de la cmp en la f)
+            if (fDeCmp(a, b) > 0)
+            {
+                memcpy(aux, a, tamElem);
+                memcpy(a, b, tamElem);
+                memcpy(b, aux, tamElem);
+            }
+        }
+    }
+
+    free(aux);
+    return 0;
+}
+//Funciones de comparacion, para la funcion de comparacion generica (?
+int cmpRegion(const void *a, const void *b)
+{
+    //cast a los tipos de datos respectivos
+    const GRUPO *g1 = (const GRUPO *)a;
+    const GRUPO *g2 = (const GRUPO *)b;
+    return strcmpi(g1->region, g2->region);
+}
+
+int cmpFecha(const void *a, const void *b)
+{
+    const GRUPO *g1 = (const GRUPO *)a;
+    const GRUPO *g2 = (const GRUPO *)b;
+
+    if (g1->f.anio != g2->f.anio)
+        return g1->f.anio - g2->f.anio;
+
+    return g1->f.mes - g2->f.mes;
+}
+
+
+
+
+
+
+
+
+
+
+
 

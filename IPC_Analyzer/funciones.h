@@ -54,12 +54,16 @@ typedef struct
     char region[30];
 }APERTURA;
 //para apertura, tenemos que acumular los montos mes a mes
+
 typedef struct {
     FECHA f;
     double ipc;
     double montoAjustado;
     double variacionAcum;
 }TABLA;
+
+
+
 
 //Primitivas
 
@@ -69,31 +73,56 @@ int divisionDecodificarFecha(char*,DIVISION*);
 
 int divisionFechDecodAStr(DIVISION*);
 
-int setString(char*,char*);
-
-int setDouble(char*,double*);
-
 int divisionNormalizarDescr(char*,DIVISION*);
+
+int aperturasArchTextAVar(FILE*,VecGenerico*);
+
+int aperturaConversionFecha(char*, APERTURA*);
+
+int grupoClasif(VecGenerico*,VecGenerico*);
+
+
 
 
 //primitivasn't
 
 int regTextADiv(DIVISION*,char*);
 
+int setString(char*,char*);
+
+int setDouble(char*,double*);
+
+int regTextAAp(APERTURA *, char *);
+
 int menu_ipc(VecGenerico*, int);
 
 int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA, int);
 
-int grupoClasif(VecGenerico*,VecGenerico*);
+
+
+
+
+int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
+
+
+
+//ordenamiento
+
+//Defino una funcion de comparacion generica (principalmente para acortar los parametros de las funciones)
+typedef int (*Cmp)(const void *, const void *);
 
 int ordPorReg(VecGenerico*);
 
 int ordFechaDeRegion(VecGenerico*);
 
-int conversionFecha(char*, APERTURA*);
+int burbujeo(void*, int, size_t , Cmp);
 
-int regTextAAp(APERTURA *, char *);
+int cmpRegion(const void*, const void*);
 
-int aperturasArchTextAVar(FILE*,VecGenerico*);
+int cmpFecha(const void*, const void*);
+
+
+
+
 
 #endif // FUNCIONES_H_INCLUDED
