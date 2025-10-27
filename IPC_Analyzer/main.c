@@ -13,13 +13,23 @@
 
 void imprimirVec(VecGenerico* vecDivision);
 void imprimirVecGrupo(VecGenerico* vecGrupo);
+void imprimirVecA(VecGenerico* vecA);
+
+int valInt(int li, int ls);
 
 int main()
 {
-    FILE *archTxt = fopen("../Data/serie_ipc_divisiones.csv","rt");
+    FILE *archTxtD = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
+    int opcionMenu;
 
-    if(!archTxt){
+    if(!archTxtD){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones(test)");
+        exit(1);
+    }
+    FILE *archTxtA = fopen("../Data/serie_ipc_aperturas.csv","rt");
+    if(!archTxtA){
+        puts("No se pudo abrir el archivo (.txt): serie_ipc_aperturas(test)");
+        fclose(archTxtD);
         exit(1);
     }
 
@@ -29,14 +39,17 @@ int main()
     VecGenerico vecGrupo;
     vectorCrear(&vecGrupo,sizeof(GRUPO));
 
+    VecGenerico vecApertura;
+    vectorCrear(&vecApertura,sizeof(APERTURA));
 
     ////////////////////////////////////W
 
-    divisionesArchTextAVar(archTxt,&vecDivision);
+    //divisionesArchTextAVar(archTxtD,&vecDivision);
 
-    //imprimirVec(&vecDivision);
+    aperturasArchTextAVar(archTxtA,&vecApertura);
 
-    //menu_ipc(&vecDivision);
+    imprimirVecA(&vecApertura);
+
 
     grupoClasif(&vecDivision,&vecGrupo);
 
@@ -46,20 +59,35 @@ int main()
 
     imprimirVecGrupo(&vecGrupo);
 
+
+    puts("\n\n--OPCION--\n");
+    puts("Seleccione:\n1-Variacion del IPC en Nivel general\n2-Calculadora de alquileres\n3-Salir");
+    opcionMenu= valInt(1,3);
+
+    switch(opcionMenu)
+    {
+        case 1: menu_ipc(&vecDivision, opcionMenu); break;
+        case 2: menu_ipc(&vecApertura, opcionMenu); break;
+        default: puts("Fin del programa¿");
+    }
+
     ////////////////////////////////////W
     vectorDestruir(&vecDivision);
-    fclose(archTxt);
+    vectorDestruir(&vecGrupo);
+    vectorDestruir(&vecApertura);
+    fclose(archTxtD);
+    fclose(archTxtA);
     return 0;
 }
 
-void imprimirVec(VecGenerico* vecDivision)
+void imprimirVecD(VecGenerico* vecDivision)
 {
     int i;
     DIVISION* vec = (DIVISION*)vecDivision->vec;
     for(i=0;i < vecDivision -> ce;i++)
     {
-        printf("\n-------------------------------------------------");
-        printf("%s|%s|%s|%.2f|%.2f|%.2f|%s|%s (%d-%d)\n",
+        printf("\n-------------------------------------------------\n");
+        printf("%s|%s|%s|%.2f|%.2f|%.2f|%s|%s(%d-%d)\n",
         (*(vec + i)).cod,
         (*(vec + i)).descrip,
         (*(vec + i)).clasif,
@@ -67,9 +95,31 @@ void imprimirVec(VecGenerico* vecDivision)
         (*(vec + i)).v_m_ipc,
         (*(vec + i)).v_i_a_ipc,
         (*(vec + i)).region,
-        (*(vec + i)).periodo_codif.periodo,
-        (*(vec + i)).periodo_codif.anio,
-        (*(vec + i)).periodo_codif.mes);
+        (*(vec + i)).periodo.per,
+        (*(vec + i)).periodo.anio,
+        (*(vec + i)).periodo.mes);
+    }
+
+    printf("\n%d registros",i);
+}
+void imprimirVecA(VecGenerico* vecA)
+{
+    int i;
+    APERTURA* vec = (APERTURA*)vecA->vec;
+    for(i=0;i < vecA -> ce;i++)
+    {
+        printf("\n-------------------------------------------------\n");
+        printf("%s|%s|%s|%.2f|%.2f|%.2f|%s|%s(%d-%d)\n",
+        (*(vec + i)).cod,
+        (*(vec + i)).descrip,
+        (*(vec + i)).clasif,
+        (*(vec + i)).ind_ipc,
+        (*(vec + i)).v_m_ipc,
+        (*(vec + i)).v_i_a_ipc,
+        (*(vec + i)).region,
+        (*(vec + i)).periodo.per,
+        (*(vec + i)).periodo.anio,
+        (*(vec + i)).periodo.mes);
     }
 
     printf("\n%d registros",i);
@@ -82,13 +132,13 @@ void imprimirVecGrupo(VecGenerico* vecGrupo)
 
     for(i = 0; i < vecGrupo->ce; i++)
     {
-        printf("\n---------------------------------------------------------------------------------------------------------------------------------\n");
-        printf("%81s | %10s | %.2f | %30s | %s (%d-%d)\n",
+        printf("\n-------------------------------------------------\n");
+        printf("%s | %s | %.2f | %s | %s (%d-%d)\n",
             (vec + i)->descrip,
             (vec + i)->grup,
             (vec + i)->ind_ipc,
             (vec + i)->region,
-            (vec + i)->f.periodo,   // asumo que FECHA tiene campo 'periodo'
+            (vec + i)->f.per,   // asumo que FECHA tiene campo 'periodo'
             (vec + i)->f.anio,
             (vec + i)->f.mes
         );
@@ -96,4 +146,14 @@ void imprimirVecGrupo(VecGenerico* vecGrupo)
 
     printf("\n%lu registros\n",(unsigned long) i);
 }
+int valInt(int li, int ls)
+{
+    int x;
+    do{
+        scanf("%d", &x);
+        if(x<li || x>ls)
+            puts("INVALIDO, reintente..");
+    }while(x<li || x>ls);
 
+    return x;
+}

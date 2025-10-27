@@ -11,12 +11,12 @@
 #define TODO_OK 0
 #define TODO_MAL 1
 
-
 char* IniCampConComillas(char*);
 char* IniCampSinComillas(char*);
 char* dirUltComillas(char *);
 int comaApunto(char *);
 int valInt(int,int);
+double valDoub(int li);
 FECHA valFecha();
 int esBien(char*, char*[]);
 int esServicio(char*, char*[]);
@@ -24,8 +24,6 @@ int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
 int setearVarGrupo(DIVISION*,GRUPO*,char*);
 int ejecutarBurbujeo(GRUPO*, int);
 int OrdenarFecha(GRUPO*, int);
-
-
 
 //utilitarias
 
@@ -71,14 +69,15 @@ int comaApunto(char *cadena)
     return TODO_OK;
 }
 
-int valInt(int li, int ls)
+double valDoub(int li)
 {
-    int x;
-    do{
-        scanf("%d", &x);
-        if(x<li || x>ls)
+    double x;
+    do
+    {
+        scanf("%lf", &x);
+        if(x<=li)
             puts("INVALIDO, reintente..");
-    }while(x<li || x>ls);
+    }while(x<=li);
 
     return x;
 }
@@ -148,7 +147,7 @@ int esServicio(char* descrip, char* servicios[])
 
 int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
 {
-    grupo -> f = division -> periodo_codif;
+    grupo -> f = division -> periodo;
 
     strcpy(grupo -> descrip,division -> descrip);
 
@@ -257,11 +256,6 @@ int OrdenarFecha(GRUPO *vec, int cant)
     return TODO_OK;
 }
 
-
-
-
-
-
 //definicon de primitivas
 int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
 {
@@ -273,7 +267,7 @@ int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
 
     while(fgets(regT,MAXTAMREG,archTxt))
     {
-        regTextAVar(&regV,regT);
+        regTextADiv(&regV,regT);
 
         vectorAgregar(&regV,vecDivision,sizeof(DIVISION));
     }
@@ -281,7 +275,7 @@ int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
     return TODO_OK;
 }
 
-int regTextAVar(DIVISION *regV, char *regT)
+int regTextADiv(DIVISION *regV, char *regT)
 {
     char *pIniCamp;
 
@@ -291,42 +285,30 @@ int regTextAVar(DIVISION *regV, char *regT)
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-
-
     pIniCamp = IniCampConComillas(regT); //REGION
-    divisionSetString(pIniCamp,regV -> region);
+    setString(pIniCamp,regV -> region);
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-
 
     pIniCamp = IniCampSinComillas(regT); //v_i_a_IPC
-    divisionSetDouble(pIniCamp,&regV -> v_i_a_ipc);
+    setDouble(pIniCamp,&regV -> v_i_a_ipc);
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-
 
     pIniCamp = IniCampSinComillas(regT); //v_m_IPC
-    divisionSetDouble(pIniCamp,&regV -> v_m_ipc);
+    setDouble(pIniCamp,&regV -> v_m_ipc);
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-
 
     pIniCamp = IniCampSinComillas(regT); //Indice_IPC
-    divisionSetDouble(pIniCamp,&regV -> ind_ipc) ;
+    setDouble(pIniCamp,&regV -> ind_ipc) ;
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-
 
     pIniCamp = IniCampConComillas(regT); //CLASIFICADOR
-    divisionSetString(pIniCamp,regV -> clasif);
+    setString(pIniCamp,regV -> clasif);
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
-
-
 
     if(!strrchr(regT, ';'))
         return TODO_MAL;
@@ -337,16 +319,12 @@ int regTextAVar(DIVISION *regV, char *regT)
     else
         pIniCamp = IniCampSinComillas(regT);
 
-
     divisionNormalizarDescr(pIniCamp,regV);
 
     *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
 
-
-
     pIniCamp = IniCampConComillas(regT); //CODIGO
-    divisionSetString(pIniCamp,regV -> cod);
-
+    setString(pIniCamp,regV -> cod);
 
     return  TODO_OK;
 }
@@ -373,19 +351,19 @@ int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
     }
 
     // Guardar fecha decodificada en la estructura
-    regV -> periodo_codif.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
-    regV -> periodo_codif.mes = *(cifra+4)*10 + *(cifra+5);
+    regV -> periodo.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
+    regV -> periodo.mes = *(cifra+4)*10 + *(cifra+5);
 
     return TODO_OK;
 }
 
 int divisionFechDecodAStr(DIVISION* regV)//P2
 {
-    char *formatoPerido = regV -> periodo_codif.periodo,
+    char *formatoPerido = regV -> periodo.per,
          anioStr[20]; //vec para guardar anio(int) como anioStr(string)
 
-    int mes = regV->periodo_codif.mes,
-        anio = regV->periodo_codif.anio;
+    int mes = regV->periodo.mes,
+        anio = regV->periodo.anio;
 
     char matMes[MESES][CANTMAXCHAR] = {{"Enero"},{"Febrero"},{"Marzo"},{"Abril"},
                                        {"Mayo"},{"Junio"},{"Julio"},{"Agosto"},
@@ -401,13 +379,13 @@ int divisionFechDecodAStr(DIVISION* regV)//P2
     return TODO_OK;
 }
 
-int divisionSetString(char *str,char *campo)
+int setString(char *str,char *campo)
 {
     strcpy(campo,str);
     return TODO_OK;
 }
 
-int divisionSetDouble(char *str, double *campo)
+int setDouble(char *str, double *campo)
 {
     if (*str == 'N' && *(str+1) == 'A')
         *campo = 0;
@@ -434,19 +412,15 @@ int divisionNormalizarDescr(char *str, DIVISION* reg)
     return TODO_OK;
 }
 
-int menu_ipc(VecGenerico* vecDivision)
+int menu_ipc(VecGenerico* vec, int opc)
 {
     double monto;
     int region;
     FECHA desde, hasta;
 
     puts("\n\n--MONTOS AJUSTADOS--\n");
-    do{
-        puts("Ingrese un monto expresado en pesos: ");
-        scanf("%lf", &monto);
-        if(monto<=0)
-            puts("INVALIDO, monto fuera de rango, reintente. ");
-    }while(monto<=0);
+    puts("Ingrese un monto expresado en pesos: ");
+    monto= valDoub(0);
 
     puts("\nSeleccione la region correspondiente:");
     puts("1 - Nacional\n2 - GBA\n3 - Pampeana\n4 - Cuyo\n5 - Noroeste\n6 - Noreste\n7 - Patagonia\n");
@@ -456,79 +430,121 @@ int menu_ipc(VecGenerico* vecDivision)
     puts("\nIngrese Periodo Desde [formato aaaa-mm]");
     desde = valFecha();
 
-    do{
-        puts("Ingrese Periodo Hasta [formato aaaa-mm]: ");
-        hasta = valFecha();
+    if(opc==1)
+    {
+        do{
+            puts("Ingrese Periodo Hasta [formato aaaa-mm]: ");
+            hasta = valFecha();
 
-        if((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes))
-            puts("Invalido, el periodoHasta no puede ser menor (o igual) a periodoDesde, reingrese.. ");
-    }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
+            if((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes))
+                puts("Invalido, el periodoHasta no puede ser menor (o igual) a periodoDesde, reingrese.. ");
+        }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
 
-    if(!ajustarMontoIPC(vecDivision, monto, region, desde, hasta))
+    }
+    if(!ajustarMontoIPC(vec, monto, region, desde, hasta, opc))
         return TODO_MAL;
+
 
     return TODO_OK;
 }
-
-int ajustarMontoIPC(VecGenerico* vecDiv, double monto, int region, FECHA desde, FECHA hasta)
+int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FECHA hasta, int opc)
 {
     double ipcDesde = 0, ipcHasta = 0;
     char *regiones[] = {"Nacional", "GBA", "Pampeana", "Cuyo", "Noroeste", "Noreste", "Patagonia"};
+    char *filtroDescripcion[] = {"Nivel general", "Alquiler de la vivienda y gastos conexos"};
     FECHA fDesde, fHasta;
-    int i=0;
+    int i = 0,nTabla = 0;
+    TABLA* tabla = malloc(vec->ce * sizeof(TABLA)); // reserva máxima necesaria
 
-    while(i<vecDiv->ce) //&& (ipcDesde == 0 || ipcHasta == 0)) //por el momento funca sin esa cond, buscar optimizacion con casos de prueba
+
+    while(i < vec->ce)
     {
-        ///filtro de descr(por consigna)
-        if (strcmpi(((DIVISION*)(vecDiv->vec) + i) -> descrip, "Nivel general") == 0)
-        {  //filtro region
-            if(strcmpi(((DIVISION*)(vecDiv->vec) + i) -> region, regiones[region - 1]) == 0)
-            {   //buscamos que el anio y mes "desde" coincidan
-               if (
-                ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif.anio == desde.anio &&
-                ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif.mes == desde.mes &&
-                ipcDesde == 0)
-//|| (vecDiv.periodo_codif.anio > desde.anio))
-                { //Caso lindo: encontramos la fecha exacta
-                    ipcDesde = ((DIVISION*)(vecDiv->vec) + i) ->ind_ipc;
-                    fDesde = ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif;
-                }
-                if ( ((((DIVISION*)vecDiv->vec + i)->periodo_codif.anio > desde.anio) ||
-                  (((DIVISION*)vecDiv->vec + i)->periodo_codif.anio == desde.anio &&
-                   ((DIVISION*)vecDiv->vec + i)->periodo_codif.mes > desde.mes)) &&
-                 ipcDesde == 0 )
-                {
-                    puts("\nNo encontramos la fecha exacta, se usara la mas cercana a ella dentro del periodo...");
-                    ipcDesde = ((DIVISION*)(vecDiv->vec) + i) ->ind_ipc;
-                    fDesde = ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif;
-                }
-            }
-            // si la fecha del registro es anterior o igual al "hasta" solicitado
-           if ( ((((DIVISION*)vecDiv->vec + i)->periodo_codif.anio < hasta.anio) ||
-              (((DIVISION*)vecDiv->vec + i)->periodo_codif.anio == hasta.anio &&
-               ((DIVISION*)vecDiv->vec + i)->periodo_codif.mes <= hasta.mes)) )
+        void* reg;
+        if(opc == 1) // DIVISION
+            reg = (DIVISION*)(vec->vec) + i;
+        else          // APERTURA
+            reg = (APERTURA*)(vec->vec) + i;
+
+        // Filtro por descripción y región (al estilo Calaz ahre)
+        char* descrip = (opc == 1) ? ((DIVISION*)reg)->descrip : ((APERTURA*)reg)->descrip;
+        char* regStr = (opc == 1) ? ((DIVISION*)reg)->region : ((APERTURA*)reg)->region;
+        FECHA periodo = (opc == 1) ? ((DIVISION*)reg)->periodo : ((APERTURA*)reg)->periodo;
+        double indIPC = (opc == 1) ? ((DIVISION*)reg)->ind_ipc : ((APERTURA*)reg)->ind_ipc;
+    //buscamos ipcDesde sea cual sea la opcion
+        if(strcmpi(descrip, filtroDescripcion[opc-1]) == 0 &&
+           strcmpi(regStr, regiones[region - 1]) == 0)
+        {
+            if(ipcDesde == 0 &&
+               periodo.anio == desde.anio && periodo.mes == desde.mes)
             {
-                ipcHasta = ((DIVISION*)(vecDiv->vec) + i) ->ind_ipc;
-                fHasta = ((DIVISION*)(vecDiv->vec) + i) ->periodo_codif;
+                ipcDesde = indIPC;
+                fDesde = periodo;
             }
+            if(ipcDesde == 0 &&
+               ((periodo.anio > desde.anio) ||
+                (periodo.anio == desde.anio && periodo.mes > desde.mes)))
+            {
+                puts("\nno encontramos la fecha exacta, se escoge la mas cercana...");
+                ipcDesde = indIPC;
+                fDesde = periodo;
+            }
+
+            if(opc == 1)//buscamos el ipc hasta solo para desc=nivel gral
+            {
+                if(((periodo.anio < hasta.anio) ||
+                    (periodo.anio == hasta.anio && periodo.mes <= hasta.mes)))
+                {
+                    ipcHasta = indIPC;
+                    fHasta = periodo;
+                }
+            }
+            else //guardamos todos los periodos desde el inicio para la tabla mes a mes solo para aperturas
+                if(ipcDesde>0)
+                {
+                    tabla[nTabla].f = periodo;
+                    tabla[nTabla].ipc = indIPC;
+                    tabla[nTabla].montoAjustado = monto * (indIPC / ipcDesde);
+                    tabla[nTabla].variacionAcum = (indIPC / ipcDesde - 1) * 100;
+                    nTabla++;
+                }
         }
         i++;
     }
 
-    if (ipcDesde == 0 || ipcHasta == 0) {
+    if(ipcDesde == 0 || (opc==1 && ipcHasta == 0))
+    {
         puts("No se encontraron datos de IPC en los periodos indicados..");
-        return TODO_MAL; //ahre
+        return TODO_MAL;
     }
 
-    double montoAjustado = monto*(ipcHasta/ipcDesde);
-    double variacion = (ipcHasta/ipcDesde-1) *100;
+    double montoAjustado = monto * (ipcHasta / ipcDesde);
+    double variacion = (ipcHasta / ipcDesde - 1) * 100;
 
-    printf("\nMonto inicial: %.2lf$", monto);
-    printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
-    printf("\nPeriodo hasta: %d-%02d \t IPC: %.2lf", fHasta.anio, fHasta.mes, ipcHasta);
-    printf("\nMonto ajustado: %.2lf$", montoAjustado);
-    printf("\nVariacion porcentual: %.2lf\n", variacion);
-
+     if(opc == 1)
+    {
+        printf("\nMonto inicial: %.2lf$", monto);
+        printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
+        printf("\nPeriodo hasta: %d-%02d \t IPC: %.2lf", fHasta.anio, fHasta.mes, ipcHasta);
+        printf("\nMonto ajustado: %.2lf$", montoAjustado);
+        printf("\nVariacion porcentual: %.2lf\n", variacion);
+    }
+    else
+    {
+        printf("\nMonto inicial: %.2lf$\n", monto);
+        printf("Periodo desde: %d-%02d \t IPC: %.2lf\n\n", fDesde.anio, fDesde.mes, ipcDesde);
+        printf("Tabla mes a mes:\n");
+        printf("Fecha\t\tIPC\tMonto Ajustado\tVariacion Acumulada\n");
+        printf("-------------------------------------------------------------\n");
+        for(int k = 0; k < nTabla; k++)
+        {
+            printf("%d-%02d\t%.2lf\t%.2lf\t\t%.2lf%%\n",
+                   tabla[k].f.anio, tabla[k].f.mes,
+                   tabla[k].ipc,
+                   tabla[k].montoAjustado,
+                   tabla[k].variacionAcum);
+        }
+        free(tabla);
+    }
     return TODO_OK;
 }
 
@@ -573,23 +589,94 @@ int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
     return TODO_OK;
 }
 
+int conversionFecha(char* fechaStr, APERTURA* regV)
+{
+    int cifra[6], indCifra;
+    char* periodo= regV->periodo.per;
 
+    // Convertir cada carácter del string a dígito numérico (copy paste de otra funcion pol las dudash¿)
+    for (indCifra = 0; indCifra < 6; indCifra++)
+        *(cifra+indCifra) = *(fechaStr+indCifra) - '0';  // Convertir char a int (diferencia en ASCII)
 
+    // Guardar fecha en estructura
+    regV -> periodo.anio = *(cifra)*1000 + *(cifra+1)*100 + *(cifra+2)*10 + *(cifra+3);
+    regV -> periodo.mes = *(cifra+4)*10 + *(cifra+5);
 
+    sprintf(periodo, "%04d-%02d-01", regV->periodo.anio, regV->periodo.mes);
 
+    return TODO_OK;
+}
 
+int regTextAAp(APERTURA *regAp, char *regT)
+{
+    char *pIniCamp;
 
+   // *(strrchr(regT, ';'))='\0';
 
+    pIniCamp= IniCampSinComillas(regT);//region
 
+    setString(pIniCamp, regAp->region);
 
+    *(strrchr(regT, ';'))='\0';
 
+    pIniCamp= IniCampSinComillas(regT);//v_i_a_ipc
 
+    setDouble(pIniCamp, &regAp->v_i_a_ipc);
 
+    *(strrchr(regT, ';'))='\0';
 
+    pIniCamp= IniCampSinComillas(regT);//v_m_ipc
 
+    setDouble(pIniCamp, &regAp->v_m_ipc);
 
+    *(strrchr(regT, ';'))='\0';
 
+    pIniCamp= IniCampSinComillas(regT);//ind_ipc
 
+    setDouble(pIniCamp, &regAp->ind_ipc);
 
+    *(strrchr(regT, ';'))='\0';
 
+    pIniCamp= IniCampSinComillas(regT);//periodo
+
+    conversionFecha(pIniCamp, regAp);
+
+    *(strrchr(regT, ';'))='\0';
+
+    pIniCamp= IniCampSinComillas(regT);//clasificador
+
+    setString(pIniCamp, regAp->clasif);
+
+    *(strrchr(regT, ';'))='\0';
+
+    pIniCamp= IniCampSinComillas(regT);//descrip
+
+    setString(pIniCamp, regAp->descrip);
+
+    *(strrchr(regT, ';'))='\0';
+
+    pIniCamp=regT;
+
+    setString(pIniCamp, regAp->cod);
+
+    return  TODO_OK;
+}
+
+int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
+{
+    APERTURA regV; //# de variable tipo struct
+    char regT[MAXTAMREG];
+
+    //saltar encabezado
+    fgets(regT,MAXTAMREG,archTxt);
+
+    while(fgets(regT,MAXTAMREG,archTxt))
+    {
+        regTextAAp(&regV,regT);
+
+        vectorAgregar(&regV,vecAp,sizeof(APERTURA));
+    }
+
+    return TODO_OK;
+}
 
