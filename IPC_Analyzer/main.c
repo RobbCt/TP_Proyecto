@@ -9,14 +9,11 @@
 #include "funciones.h"
 
 //define's
-
-
 int valEntero(int, int);
 
 void imprimirVecDiv(VecGenerico*);
 void imprimirVecGrupo(VecGenerico*);
 void imprimirVecAp(VecGenerico*);
-
 
 int main()
 {
@@ -28,7 +25,7 @@ int main()
         exit(1);
     }
 
-    FILE *archTxtA = fopen("../Data/serie_ipc_aperturas(test).csv","rt");
+    FILE *archTxtA = fopen("../Data/serie_ipc_aperturas.csv","rt");
     if(!archTxtA){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_aperturas");
         fclose(archTxtD);
@@ -61,7 +58,7 @@ int main()
     imprimirVecGrupo(&vecGrupo);
 
 
-    puts("\n\n--OPCION--\n");
+    puts("\n\n--OPCIONES--\n");
     puts("Seleccione:\n1-Variacion del IPC en Nivel general\n2-Calculadora de alquileres\n3-Salir");
     opcionMenu = valEntero(1,3);
 

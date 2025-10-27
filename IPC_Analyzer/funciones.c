@@ -13,15 +13,14 @@
 
 char* IniCampConComillas(char*);
 char* IniCampSinComillas(char*);
+int cortarUltimoCampo(char*);
 int comaApunto(char *);
 int valInt(int,int);
 double valDoub(int li);
 FECHA valFecha();
-int esBien(char*, char*[]);
-int esServicio(char*, char*[]);
+int esBien(char*, const char*[]);
+int esServicio(char*, const char*[]);
 int setearVarGrupo(DIVISION*,GRUPO*,char*);
-
-
 
 
 //utilitarias
@@ -54,6 +53,21 @@ char* IniCampSinComillas(char* regT)
 
     return iniCamp + 1;
 }
+int cortarUltimoCampo(char *str)
+{
+    char *p = strrchr(str, ';');
+    if (!p)
+        return TODO_MAL;
+    *p = '\0';
+    return TODO_OK;
+}
+int saltarEncabezado(FILE* archTxt, char* regT)
+{
+    fgets(regT, MAXTAMREG, archTxt);
+    if (!fgets(regT, MAXTAMREG, archTxt))
+        return TODO_MAL;
+    return TODO_OK;
+}
 
 int comaApunto(char *cadena)
 {
@@ -84,8 +98,7 @@ int valInt(int li, int ls)
 double valDoub(int li)
 {
     double x;
-    do
-    {
+    do{
         scanf("%lf", &x);
         if(x<=li)
             puts("INVALIDO, reintente..");
@@ -97,8 +110,7 @@ double valDoub(int li)
 FECHA valFecha()
 {
     FECHA x;
-    do
-    {
+    do{
         scanf("%d-%d", &x.anio, &x.mes);
         if((x.anio<2000 || x.anio>2025)||(x.mes<1 || x.mes>12))
             puts("FECHA INVALIDA, reintente..");
@@ -107,7 +119,7 @@ FECHA valFecha()
     return x;
 }
 
-int esBien(char* descrip, char* bienes[])
+int esBien(char* descrip, const char* bienes[])
 {
     int i;
     for(i=0;i<5;i++)
@@ -118,7 +130,7 @@ int esBien(char* descrip, char* bienes[])
     return 0;
 }
 
-int esServicio(char* descrip, char* servicios[])
+int esServicio(char* descrip, const char* servicios[])
 {
     int i;
     for(i=0;i<8;i++)
@@ -145,22 +157,18 @@ int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
 }
 
 
-
-
-
-//definicon de primitivas
+//definicion de primitivas
 int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
 {
     DIVISION regV; //# de variable tipo struct
     char regT[MAXTAMREG];
 
-    //saltar encabezado
-    fgets(regT,MAXTAMREG,archTxt);
+    if(saltarEncabezado(archTxt, regT)==TODO_MAL)
+        return TODO_MAL;
 
     while(fgets(regT,MAXTAMREG,archTxt))
     {
         regTextADiv(&regV,regT);
-
         vectorAgregar(&regV,vecDivision,sizeof(DIVISION));
     }
 
@@ -179,8 +187,7 @@ int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
 
     // Algoritmo de decodificación
     for (indCifra = 0; indCifra < 6; indCifra++)
-        {
-
+    {
         indCor = 0;
         while(*(vecCor + indCor) != *(cifra + indCifra))
             indCor++;
@@ -197,8 +204,7 @@ int divisionDecodificarFecha(char* fechaStr, DIVISION* regV)
 
 int divisionFechDecodAStr(DIVISION* regV)
 {
-    char *formatoPerido = regV -> periodo.per,
-         anioStr[20]; //vec para guardar anio(int) como anioStr(string)
+    char *formatoPeriodo = regV -> periodo.per;
 
     int mes = regV->periodo.mes,
         anio = regV->periodo.anio;
@@ -207,12 +213,7 @@ int divisionFechDecodAStr(DIVISION* regV)
                                        {"Mayo"},{"Junio"},{"Julio"},{"Agosto"},
                                        {"Septiembre"},{"Octubre"},{"Noviembre"},{"Diciembre"}
                                       };
-    //convertir anio(int) a anioStr(string)
-    sprintf(anioStr, "%d", anio);
-
-    strcpy(formatoPerido,*(matMes+(mes-1))); //Enero
-    strcat(formatoPerido, " - ");            //Enero -
-    strcat(formatoPerido, anioStr);          //Enero - 2017
+    sprintf(formatoPeriodo, "%s - %d", *(matMes + mes - 1), anio);
 
     return TODO_OK;
 }
@@ -236,8 +237,8 @@ int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
     APERTURA regAp; //# de variable tipo struct
     char regT[MAXTAMREG];
 
-    //saltar encabezado
-    fgets(regT,MAXTAMREG,archTxt);
+    if(saltarEncabezado(archTxt, regT)==TODO_MAL)
+        return TODO_MAL;
 
     while(fgets(regT,MAXTAMREG,archTxt))
     {
@@ -272,18 +273,16 @@ int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
     DIVISION division;
     GRUPO grupo;
     int escribir;
-
     size_t ind = 0;
 
-     char *bienes[] = {
+    const char *bienes[] = {
         "Alimentos y bebidas no alcohólicas",
         "Bebidas alcohólicas y tabaco",
         "Prendas de vestir y calzado",
         "Bienes y servicios varios",
         "Equipamiento y mantenimiento del hogar"
     };
-
-    char *servicios[] = {"Recreación y cultura",
+    const char *servicios[] = {"Recreación y cultura",
                         "Restaurantes y hoteles","Salud","Transporte",
                         "Educación","Comunicación","Comunicación",
                         "Vivienda, agua, electricidad, gas y otros combustibles"
@@ -352,7 +351,8 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     FECHA fDesde, fHasta;
     int i = 0,nTabla = 0;
     TABLA* tabla = malloc(vec->ce * sizeof(TABLA)); // reserva máxima necesaria
-
+    if(!tabla)
+        return TODO_MAL;
 
     while(i < vec->ce)
     {
@@ -372,18 +372,13 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
            strcmpi(regStr, regiones[region - 1]) == 0)
         {
             if(ipcDesde == 0 &&
-               periodo.anio == desde.anio && periodo.mes == desde.mes)
+               ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
             {
                 ipcDesde = indIPC;
                 fDesde = periodo;
-            }
-            if(ipcDesde == 0 &&
-               ((periodo.anio > desde.anio) ||
-                (periodo.anio == desde.anio && periodo.mes > desde.mes)))
-            {
-                puts("\nno encontramos la fecha exacta, se escoge la mas cercana...");
-                ipcDesde = indIPC;
-                fDesde = periodo;
+
+                if(periodo.anio != desde.anio || periodo.mes != desde.mes)
+                    puts("\nNo encontramos la fecha exacta, se escoge la más cercana...");
             }
 
             if(opc == 1)//buscamos el ipc hasta solo para desc=nivel gral
@@ -396,7 +391,8 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
                 }
             }
             else //guardamos todos los periodos desde el inicio para la tabla mes a mes solo para aperturas
-                if(ipcDesde>0)
+                if(ipcDesde > 0 &&
+                   ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
                 {
                     tabla[nTabla].f = periodo;
                     tabla[nTabla].ipc = indIPC;
@@ -411,6 +407,7 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     if(ipcDesde == 0 || (opc==1 && ipcHasta == 0))
     {
         puts("No se encontraron datos de IPC en los periodos indicados..");
+        free(tabla);
         return TODO_MAL;
     }
 
@@ -434,22 +431,20 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
         printf("-------------------------------------------------------------\n");
         for(int k = 0; k < nTabla; k++)
         {
-            printf("%d-%02d\t%.2lf\t%.2lf\t\t%.2lf%%\n",
+            printf("%d-%02d\t\t%.2lf\t\t%.2lf\t\t%.2lf%%\n",
                    tabla[k].f.anio, tabla[k].f.mes,
                    tabla[k].ipc,
                    tabla[k].montoAjustado,
                    tabla[k].variacionAcum);
         }
-        free(tabla);
     }
+
+    free(tabla);
     return TODO_OK;
 }
 
 
-
-
 //definicion de primitivasn't
-
 int regTextADiv(DIVISION *regV, char *regT)
 {
     char *pIniCamp;
@@ -458,45 +453,45 @@ int regTextADiv(DIVISION *regV, char *regT)
     divisionDecodificarFecha(pIniCamp,regV);
     divisionFechDecodAStr(regV);
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
 
     pIniCamp = IniCampConComillas(regT); //REGION
     setString(pIniCamp,regV -> region);
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
 
     pIniCamp = IniCampSinComillas(regT); //v_i_a_IPC
     setDouble(pIniCamp,&regV -> v_i_a_ipc);
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
+
 
     pIniCamp = IniCampSinComillas(regT); //v_m_IPC
     setDouble(pIniCamp,&regV -> v_m_ipc);
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
 
     pIniCamp = IniCampSinComillas(regT); //Indice_IPC
     setDouble(pIniCamp,&regV -> ind_ipc) ;
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
 
     pIniCamp = IniCampConComillas(regT); //CLASIFICADOR
     setString(pIniCamp,regV -> clasif);
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
 
     if(!strrchr(regT, ';'))
         return TODO_MAL;
 
     if(*(strrchr(regT,';') + 1) == '"') //DESCRIPCION
         pIniCamp = IniCampConComillas(regT);
-
     else
         pIniCamp = IniCampSinComillas(regT);
 
     divisionNormalizarDescr(pIniCamp,regV);
 
-    *(strrchr(regT,';')) = '\0'; //cada q consumis un campo
+    cortarUltimoCampo(regT);
 
     pIniCamp = IniCampConComillas(regT); //CODIGO
     setString(pIniCamp,regV -> cod);
@@ -512,6 +507,8 @@ int setString(char *str,char *campo)
 
 int setDouble(char *str, double *campo)
 {
+    //otra opcion para acotar lineas¿
+    //(*str == 'N' && *(str+1) == 'A') ? (*campo = 0) : (comaApunto(str), sscanf(str, "%lf", campo));
     if (*str == 'N' && *(str+1) == 'A')
         *campo = 0;
     else
@@ -526,56 +523,47 @@ int setDouble(char *str, double *campo)
 int regTextAAp(APERTURA *regAp, char *regT)
 {
     char *pIniCamp, *finReg;
-
     if(!(finReg = strrchr(regT,'\n')))
         return TODO_MAL;
 
     *finReg = '\0';
 
     pIniCamp = IniCampSinComillas(regT);//region
-
     setString(pIniCamp, regAp->region);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
     pIniCamp= IniCampSinComillas(regT);//v_i_a_ipc
-
     setDouble(pIniCamp, &regAp->v_i_a_ipc);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
     pIniCamp= IniCampSinComillas(regT);//v_m_ipc
-
     setDouble(pIniCamp, &regAp->v_m_ipc);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
     pIniCamp= IniCampSinComillas(regT);//ind_ipc
-
     setDouble(pIniCamp, &regAp->ind_ipc);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
     pIniCamp= IniCampSinComillas(regT);//periodo
-
     aperturaConversionFecha(pIniCamp, regAp);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
     pIniCamp= IniCampSinComillas(regT);//clasificador
-
     setString(pIniCamp, regAp->clasif);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
     pIniCamp= IniCampSinComillas(regT);//descrip
-
     setString(pIniCamp, regAp->descrip);
 
-    *(strrchr(regT, ';'))='\0';
+    cortarUltimoCampo(regT);
 
-    pIniCamp = regT;
-
+    pIniCamp = regT;            //codigo
     setString(pIniCamp, regAp->cod);
 
     return  TODO_OK;
@@ -587,29 +575,24 @@ int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
         if(!redimensionarVector(vec, vec->cap * INCR_FACTOR, tam))
             return TODO_MAL;
 
-
     GRUPO* i = (GRUPO*) vec -> vec;
     GRUPO* j = i + vec->ce - 1;
 
     while(i <= j && strcmpi(elem->grup, i -> grup) > 0)
         i++;
 
-
     // (opcional) para duplicados:
     // if (i <= j && strcmpi(elem->grup, i->grup) == 0)
     //     return TODO_MAL;
 
-    for(; i <= j; j--){
+    for(; i <= j; j--)
         *(j + 1) = *j;
-    }
 
     *i = *elem;
     vec->ce++;
 
     return TODO_OK;
 }
-
-
 
 //ordenamiento
 int ordPorReg(VecGenerico *vec)
@@ -618,12 +601,10 @@ int ordPorReg(VecGenerico *vec)
     int pos = 0, cortar = 0;
 
     while(pos < vec->ce && cortar == 0)
-    {
         if(strcmpi((reg + pos)->grup, "Bienes") == 0)
             pos++;
         else
             cortar = 1;
-    }
 
     // Orden para bienes y servicios
     burbujeo(vec->vec, pos, sizeof(GRUPO), cmpRegion);
@@ -636,12 +617,12 @@ int ordFechaDeRegion(VecGenerico *vec)
 {
     GRUPO *reg = (GRUPO *)vec->vec;
     char regAct[30] = "";
-    int pos = 0;
+    int pos = 0, lim;
 
     while (pos < vec->ce)
     {
         GRUPO *ini = reg; //guardo el reg de la reg actual (base del ordenam)
-        int lim = 0;
+        lim = 0;
 
         strcpy(regAct, reg->region);
 
@@ -686,7 +667,7 @@ int burbujeo(void *vec, int lim, size_t tamElem, Cmp fDeCmp)
     }
 
     free(aux);
-    return 0;
+    return TODO_OK;
 }
 //Funciones de comparacion, para la funcion de comparacion generica (?
 int cmpRegion(const void *a, const void *b)
@@ -707,15 +688,4 @@ int cmpFecha(const void *a, const void *b)
 
     return g1->f.mes - g2->f.mes;
 }
-
-
-
-
-
-
-
-
-
-
-
 
