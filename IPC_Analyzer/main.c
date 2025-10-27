@@ -9,7 +9,6 @@
 #include "funciones.h"
 
 //define's
-int valEntero(int, int);
 
 void imprimirVecDiv(VecGenerico*);
 void imprimirVecGrupo(VecGenerico*);
@@ -17,7 +16,6 @@ void imprimirVecAp(VecGenerico*);
 
 int main()
 {
-    int opcionMenu;
     FILE *archTxtD = fopen("../Data/serie_ipc_divisiones(test).csv","rt");
 
     if(!archTxtD){
@@ -41,7 +39,7 @@ int main()
     VecGenerico vecApertura;
     vectorCrear(&vecApertura,sizeof(APERTURA));
 
-    ////////////////////////////////////WORK
+    /////////////////WORK///////////////////
 
     divisionesArchTextAVar(archTxtD,&vecDivision);
 
@@ -57,20 +55,9 @@ int main()
 
     imprimirVecGrupo(&vecGrupo);
 
+    menu(&vecDivision, &vecApertura); //aun es modificable y puede ser utilizado para mas puntos
 
-    puts("\n\n--OPCIONES--\n");
-    puts("Seleccione:\n1-Variacion del IPC en Nivel general\n2-Calculadora de alquileres\n3-Salir");
-    opcionMenu = valEntero(1,3);
-
-    switch(opcionMenu)
-    {
-        case 1: menu_ipc(&vecDivision, opcionMenu); break;
-        case 2: menu_ipc(&vecApertura, opcionMenu); break;
-        default: puts("Fin del programa¿");
-    }
-
-    ////////////////////////////////////WORK
-
+    /////////////////WORK///////////////////
     vectorDestruir(&vecDivision);
     vectorDestruir(&vecGrupo);
     vectorDestruir(&vecApertura);
@@ -81,21 +68,6 @@ int main()
     return 0;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-int valEntero(int li, int ls)//sacarla cuando se modularizen los menu's
-{
-    int dato;
-
-    scanf("%d",&dato);
-    while(dato < li || dato > ls)
-    {
-        printf("reingresar: ");
-        scanf("%d",&dato);
-    }
-
-    return dato;
-}
-
 void imprimirVecDiv(VecGenerico* vecDivision)
 {
     int i;

@@ -94,6 +94,8 @@ int setDouble(char*,double*);
 
 int regTextAAp(APERTURA *, char *);
 
+int menu(VecGenerico*, VecGenerico*);
+
 int menu_ipc(VecGenerico*, int);
 
 int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA, int);

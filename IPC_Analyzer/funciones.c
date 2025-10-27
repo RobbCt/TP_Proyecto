@@ -307,6 +307,23 @@ int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
     return TODO_OK;
 }
 
+int menu(VecGenerico* vecDivision, VecGenerico* vecApertura)
+{
+    int opcionMenu;
+
+    puts("\n\n--MENU PRINCIPAL--\n");
+    puts("Seleccione:\n1-Variacion del IPC en Nivel general\n2-Calculadora de alquileres\n3-Salir");
+    opcionMenu = valInt(1,3);
+
+    switch(opcionMenu)///agregamos la opcion de Análisis de la evolución del IPC por grupos (Bienes vs Servicios)??
+    {
+        case 1: menu_ipc(vecDivision, opcionMenu); break;
+        case 2: menu_ipc(vecApertura, opcionMenu); break;
+        default: puts("Fin del programa¿");
+    }
+    return TODO_OK;
+}
+
 int menu_ipc(VecGenerico* vec, int opc)
 {
     double monto;
@@ -346,33 +363,38 @@ int menu_ipc(VecGenerico* vec, int opc)
 int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FECHA hasta, int opc)
 {
     double ipcDesde = 0, ipcHasta = 0;
+    int i = 0;
+    FECHA fDesde, fHasta;
+
+    FILE* fbin = NULL;
+    if(opc==2) // APERTURA: crear archivo binario
+    {
+        fbin = fopen("../Data/tabla_ipc.bin","w+b");
+        if(!fbin)
+        {
+            puts("Error al crear el archivo...");
+            return TODO_MAL;
+        }
+    }
+
     char *regiones[] = {"Nacional", "GBA", "Pampeana", "Cuyo", "Noroeste", "Noreste", "Patagonia"};
     char *filtroDescripcion[] = {"Nivel general", "Alquiler de la vivienda y gastos conexos"};
-    FECHA fDesde, fHasta;
-    int i = 0,nTabla = 0;
-    TABLA* tabla = malloc(vec->ce * sizeof(TABLA)); // reserva máxima necesaria
-    if(!tabla)
-        return TODO_MAL;
 
-    while(i < vec->ce)
+    for(i = 0; i < vec->ce; i++)
     {
         void* reg;
-        if(opc == 1) // DIVISION
-            reg = (DIVISION*)(vec->vec) + i;
-        else          // APERTURA
-            reg = (APERTURA*)(vec->vec) + i;
+        (opc==1)? (reg = (DIVISION*)(vec->vec) + i) : (reg = (APERTURA*)(vec->vec) + i);
 
         // Filtro por descripción y región (al estilo Calaz ahre)
         char* descrip = (opc == 1) ? ((DIVISION*)reg)->descrip : ((APERTURA*)reg)->descrip;
         char* regStr = (opc == 1) ? ((DIVISION*)reg)->region : ((APERTURA*)reg)->region;
         FECHA periodo = (opc == 1) ? ((DIVISION*)reg)->periodo : ((APERTURA*)reg)->periodo;
         double indIPC = (opc == 1) ? ((DIVISION*)reg)->ind_ipc : ((APERTURA*)reg)->ind_ipc;
+
     //buscamos ipcDesde sea cual sea la opcion
-        if(strcmpi(descrip, filtroDescripcion[opc-1]) == 0 &&
-           strcmpi(regStr, regiones[region - 1]) == 0)
+        if(strcmpi(descrip, filtroDescripcion[opc-1]) == 0 && strcmpi(regStr, regiones[region - 1]) == 0)
         {
-            if(ipcDesde == 0 &&
-               ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
+            if(ipcDesde == 0 && ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
             {
                 ipcDesde = indIPC;
                 fDesde = periodo;
@@ -380,69 +402,60 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
                 if(periodo.anio != desde.anio || periodo.mes != desde.mes)
                     puts("\nNo encontramos la fecha exacta, se escoge la más cercana...");
             }
-
             if(opc == 1)//buscamos el ipc hasta solo para desc=nivel gral
             {
-                if(((periodo.anio < hasta.anio) ||
-                    (periodo.anio == hasta.anio && periodo.mes <= hasta.mes)))
+                if(periodo.anio < hasta.anio || (periodo.anio == hasta.anio && periodo.mes <= hasta.mes))
                 {
                     ipcHasta = indIPC;
                     fHasta = periodo;
                 }
             }
             else //guardamos todos los periodos desde el inicio para la tabla mes a mes solo para aperturas
-                if(ipcDesde > 0 &&
-                   ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
+                if(ipcDesde > 0)// && ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
                 {
-                    tabla[nTabla].f = periodo;
-                    tabla[nTabla].ipc = indIPC;
-                    tabla[nTabla].montoAjustado = monto * (indIPC / ipcDesde);
-                    tabla[nTabla].variacionAcum = (indIPC / ipcDesde - 1) * 100;
-                    nTabla++;
+                    TABLA t;
+                    t.f = periodo;
+                    t.ipc = indIPC;
+                    t.montoAjustado = monto * (indIPC / ipcDesde);
+                    t.variacionAcum = (indIPC / ipcDesde - 1) * 100;
+
+                    //grabamos directo en el arch .bin
+                    fwrite(&t, sizeof(TABLA), 1, fbin);
                 }
         }
-        i++;
     }
-
     if(ipcDesde == 0 || (opc==1 && ipcHasta == 0))
     {
         puts("No se encontraron datos de IPC en los periodos indicados..");
-        free(tabla);
+        if(fbin)
+            fclose(fbin);
         return TODO_MAL;
     }
 
     double montoAjustado = monto * (ipcHasta / ipcDesde);
     double variacion = (ipcHasta / ipcDesde - 1) * 100;
 
-     if(opc == 1)
-    {
-        printf("\nMonto inicial: %.2lf$", monto);
-        printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
-        printf("\nPeriodo hasta: %d-%02d \t IPC: %.2lf", fHasta.anio, fHasta.mes, ipcHasta);
-        printf("\nMonto ajustado: %.2lf$", montoAjustado);
-        printf("\nVariacion porcentual: %.2lf\n", variacion);
-    }
+    printf("\nMonto inicial: %.2lf$", monto);
+    printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
+
+    if(opc == 1)
+        printf("Periodo hasta: %d-%02d \t IPC: %.2lf\nMonto ajustado: %.2lf$\nVariacion porcentual: %.2lf\n",
+               fHasta.anio,fHasta.mes,ipcHasta,montoAjustado,variacion);
     else
     {
-        printf("\nMonto inicial: %.2lf$\n", monto);
-        printf("Periodo desde: %d-%02d \t IPC: %.2lf\n\n", fDesde.anio, fDesde.mes, ipcDesde);
-        printf("Tabla mes a mes:\n");
-        printf("Fecha\t\tIPC\tMonto Ajustado\tVariacion Acumulada\n");
+        rewind(fbin);
+        TABLA t;
+        printf("Tabla mes a mes:\nFecha\t\tIPC\tMonto Ajustado\tVariacion Acumulada\n");
         printf("-------------------------------------------------------------\n");
-        for(int k = 0; k < nTabla; k++)
-        {
+        while(fread(&t, sizeof(TABLA), 1, fbin))
             printf("%d-%02d\t\t%.2lf\t\t%.2lf\t\t%.2lf%%\n",
-                   tabla[k].f.anio, tabla[k].f.mes,
-                   tabla[k].ipc,
-                   tabla[k].montoAjustado,
-                   tabla[k].variacionAcum);
-        }
+                   t.f.anio, t.f.mes, t.ipc, t.montoAjustado, t.variacionAcum);
+
+        fclose(fbin);
     }
 
-    free(tabla);
     return TODO_OK;
 }
-
 
 //definicion de primitivasn't
 int regTextADiv(DIVISION *regV, char *regT)
@@ -688,4 +701,3 @@ int cmpFecha(const void *a, const void *b)
 
     return g1->f.mes - g2->f.mes;
 }
-
