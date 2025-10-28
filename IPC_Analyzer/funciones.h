@@ -94,17 +94,16 @@ int setDouble(char*,double*);
 
 int regTextAAp(APERTURA *, char *);
 
+int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
+
 int menu(VecGenerico*, VecGenerico*);
 
 int menu_ipc(VecGenerico*, int);
 
 int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA, int);
 
+int evoIpcPorGrup(VecGenerico*, char*);
 
-
-
-
-int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
 
 
 
@@ -115,15 +114,15 @@ typedef int (*Cmp)(const void *, const void *);
 
 int ordPorReg(VecGenerico*);
 
-int ordFechaDeRegion(VecGenerico*);
+int ordGrupoDeRegion(VecGenerico*);
 
 int burbujeo(void*, int, size_t , Cmp);
 
 int cmpRegion(const void*, const void*);
 
+int cmpGrupo(const void*, const void*);
+
 int cmpFecha(const void*, const void*);
-
-
 
 
 
