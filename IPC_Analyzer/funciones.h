@@ -41,18 +41,6 @@ typedef struct
     char region[30];
     FECHA periodo;
 }DIVISION;
-
-typedef struct
-{
-    char cod[21];
-    char descrip[81];
-    char clasif[51];
-    FECHA periodo; //el espacio en char será utilizado para escribir anio-mes-dia en str
-    double ind_ipc;
-    double v_m_ipc;
-    double v_i_a_ipc;
-    char region[30];
-}APERTURA;
 //para apertura, tenemos que acumular los montos mes a mes
 
 typedef struct {
@@ -77,7 +65,7 @@ int divisionNormalizarDescr(char*,DIVISION*);
 
 int aperturasArchTextAVar(FILE*,VecGenerico*);
 
-int aperturaConversionFecha(char*, APERTURA*);
+int aperturaConversionFecha(char*, DIVISION*);
 
 int grupoClasif(VecGenerico*,VecGenerico*);
 
@@ -92,11 +80,11 @@ int setString(char*,char*);
 
 int setDouble(char*,double*);
 
-int regTextAAp(APERTURA *, char *);
+int regTextAAp(DIVISION *, char *);
 
 int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
 
-int menu(VecGenerico*, VecGenerico*);
+int menu(VecGenerico*, VecGenerico*, VecGenerico*);
 
 int menu_ipc(VecGenerico*, int);
 

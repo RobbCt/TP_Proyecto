@@ -177,7 +177,6 @@ int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
         regTextADiv(&regV,regT);
         vectorAgregar(&regV,vecDivision,sizeof(DIVISION));
     }
-
     return TODO_OK;
 }
 
@@ -240,7 +239,7 @@ int divisionNormalizarDescr(char *str, DIVISION* reg)
 
 int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
 {
-    APERTURA regAp; //# de variable tipo struct
+    DIVISION regAp; //# de variable tipo struct
     char regT[MAXTAMREG];
 
     if(saltarEncabezado(archTxt, regT)==TODO_MAL)
@@ -250,13 +249,13 @@ int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
     {
         regTextAAp(&regAp,regT);
 
-        vectorAgregar(&regAp,vecAp,sizeof(APERTURA));
+        vectorAgregar(&regAp,vecAp,sizeof(DIVISION));
     }
 
     return TODO_OK;
 }
 
-int aperturaConversionFecha(char* fechaStr, APERTURA* regAp)
+int aperturaConversionFecha(char* fechaStr, DIVISION* regAp)
 {
     int cifra[6], indCifra;
     char* periodo= regAp->periodo.per;
@@ -380,20 +379,12 @@ int setString(char *str,char *campo)
 
 int setDouble(char *str, double *campo)
 {
-    //otra opcion para acotar lineas¿
-    //(*str == 'N' && *(str+1) == 'A') ? (*campo = 0) : (comaApunto(str), sscanf(str, "%lf", campo));
-    if (*str == 'N' && *(str+1) == 'A')
-        *campo = 0;
-    else
-    {
-        comaApunto(str);
-        sscanf(str,"%lf",campo);
-    }
+    (*str == 'N' && *(str+1) == 'A') ? (*campo = 0) : (comaApunto(str), sscanf(str, "%lf", campo));
 
     return TODO_OK;
 }
 
-int regTextAAp(APERTURA *regAp, char *regT)
+int regTextAAp(DIVISION *regAp, char *regT)
 {
     char *pIniCamp, *finReg;
     if(!(finReg = strrchr(regT,'\n')))
@@ -467,18 +458,19 @@ int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
     return TODO_OK;
 }
 
-int menu(VecGenerico* vecDivision, VecGenerico* vecApertura)
+int menu(VecGenerico* vecDivision, VecGenerico* vecApertura, VecGenerico* vecGrupo)
 {
     int opcionMenu;
 
     puts("\n\n--MENU PRINCIPAL--\n");
-    puts("Seleccione:\n1-Variacion del IPC en Nivel general\n2-Calculadora de alquileres\n3-Salir");
-    opcionMenu = valInt(1,3);
+    puts("Seleccione:\n1-Variacion del IPC en Nivel general\n2-Analisis de la evolucion del IPC por grupos\n3-Calculadora de alquileres\n4-Salir");
+    opcionMenu = valInt(1,4);
 
-    switch(opcionMenu)///agregamos la opcion de Análisis de la evolución del IPC por grupos (Bienes vs Servicios)??
+    switch(opcionMenu)
     {
         case 1: menu_ipc(vecDivision, opcionMenu); break;
-        case 2: menu_ipc(vecApertura, opcionMenu); break;
+        case 2: evoIpcPorGrup(vecGrupo,"Nacional");break;
+        case 3: menu_ipc(vecApertura, opcionMenu); break;
         default: puts("Fin del programa¿");
     }
     return TODO_OK;
@@ -490,7 +482,7 @@ int menu_ipc(VecGenerico* vec, int opc)
     int region;
     FECHA desde, hasta;
 
-    puts("\n\n--MONTOS AJUSTADOS--\n");
+    puts("\n\n--MONTOS AJUSTADOS--\n");//cambiar el name?¿
     puts("Ingrese un monto expresado en pesos: ");
     monto= valDoub(0);
 
@@ -516,7 +508,6 @@ int menu_ipc(VecGenerico* vec, int opc)
     if(!ajustarMontoIPC(vec, monto, region, desde, hasta, opc))
         return TODO_MAL;
 
-
     return TODO_OK;
 }
 
@@ -525,8 +516,9 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     double ipcDesde = 0, ipcHasta = 0;
     int i = 0;
     FECHA fDesde, fHasta;
+    DIVISION* reg;
 
-    FILE* fbin = NULL;
+    FILE* fbin;
     if(opc==2) // APERTURA: crear archivo binario
     {
         fbin = fopen("../Data/tabla_ipc.bin","w+b");
@@ -542,14 +534,12 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
 
     for(i = 0; i < vec->ce; i++)
     {
-        void* reg;
-        (opc==1)? (reg = (DIVISION*)(vec->vec) + i) : (reg = (APERTURA*)(vec->vec) + i);
+        reg = (DIVISION*)(vec->vec) + i;
 
-        // Filtro por descripción y región (al estilo Calaz ahre)
-        char* descrip = (opc == 1) ? ((DIVISION*)reg)->descrip : ((APERTURA*)reg)->descrip;
-        char* regStr = (opc == 1) ? ((DIVISION*)reg)->region : ((APERTURA*)reg)->region;
-        FECHA periodo = (opc == 1) ? ((DIVISION*)reg)->periodo : ((APERTURA*)reg)->periodo;
-        double indIPC = (opc == 1) ? ((DIVISION*)reg)->ind_ipc : ((APERTURA*)reg)->ind_ipc;
+        char* descrip = reg->descrip;
+        char* regStr = reg->region;
+        FECHA periodo = reg->periodo;
+        double indIPC = reg->ind_ipc;
 
     //buscamos ipcDesde sea cual sea la opcion
         if(strcmpi(descrip, filtroDescripcion[opc-1]) == 0 && strcmpi(regStr, regiones[region - 1]) == 0)
@@ -662,15 +652,12 @@ int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
             actual++;
         }
 
-
-
 //      //promedio de todos
 //      double promBienes = (cantBienes > 0) ? (sumBienes / cantBienes) : 0.0;
 //      double promServicios = (cantServicios > 0) ? (sumServicios / cantServicios) : 0.0;
 //
 //      printf("%04d-%02d | %-15s | %9.4f | %9.4f\n",
 //      anioActual, mesActual, regionActual, promBienes, promServicios);
-
 
         //promedio de la region
         if (strcmpi(regionActual,region) == 0)

@@ -11,6 +11,8 @@
 //define's
 
 void imprimirVecDiv(VecGenerico*);
+
+//necesario que sigan siendo dos funciones distintas?? no, permiso para unificarla¿
 void imprimirVecGrupo(VecGenerico*);
 void imprimirVecAp(VecGenerico*);
 
@@ -37,7 +39,7 @@ int main()
     vectorCrear(&vecGrupo,sizeof(GRUPO));
 
     VecGenerico vecApertura;
-    vectorCrear(&vecApertura,sizeof(APERTURA));
+    vectorCrear(&vecApertura,sizeof(DIVISION));
 
     /////////////////WORK///////////////////
 
@@ -55,11 +57,10 @@ int main()
 
     ordGrupoDeRegion(&vecGrupo);
 
-    evoIpcPorGrup(&vecGrupo,"Nacional");
 
     //imprimirVecGrupo(&vecGrupo);///(opciona)
 
-    menu(&vecDivision, &vecApertura); //aun es modificable y puede ser utilizado para mas puntos
+    menu(&vecDivision, &vecApertura, &vecGrupo); //aun es modificable y puede ser utilizado para mas puntos
 
     /////////////////WORK///////////////////
 
@@ -126,7 +127,7 @@ void imprimirVecGrupo(VecGenerico* vecGrupo)
 void imprimirVecAp(VecGenerico* vecA)
 {
     int i;
-    APERTURA* vec = (APERTURA*)vecA->vec;
+    DIVISION* vec = (DIVISION*)vecA->vec;
     for(i=0;i < vecA -> ce;i++)
     {
         printf("%5s | %-57s | %s | %.2f | %5.2f | %.2f | %10s | %10s(%d-%d)",
