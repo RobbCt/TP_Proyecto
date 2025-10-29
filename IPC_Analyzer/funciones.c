@@ -275,6 +275,11 @@ int aperturaConversionFecha(char* fechaStr, DIVISION* regAp)
 
 int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 {
+    if (vecDivision == NULL || vecDivision->vec == NULL || vecDivision->ce == 0)
+    {
+        return TODO_MAL;
+    }
+
     DIVISION division;
     GRUPO grupo;
     int escribir;
@@ -435,6 +440,7 @@ int regTextAAp(DIVISION *regAp, char *regT)
 
 int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
 {
+
     if(vec->ce == vec->cap)
         if(!redimensionarVector(vec, vec->cap * INCR_FACTOR, tam))
             return TODO_MAL;
@@ -513,13 +519,17 @@ int menu_ipc(VecGenerico* vec, int opc)
 
 int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FECHA hasta, int opc)
 {
+    if (vec == NULL || vec->vec == NULL || vec->ce == 0) {
+        return TODO_MAL;
+    }
+
     double ipcDesde = 0, ipcHasta = 0;
     int i = 0;
     FECHA fDesde, fHasta;
     DIVISION* reg;
 
-    FILE* fbin;
-    if(opc==2) // APERTURA: crear archivo binario
+    FILE* fbin = NULL;
+    if(opc == 2) // APERTURA: crear archivo binario
     {
         fbin = fopen("../Data/tabla_ipc.bin","w+b");
         if(!fbin)
@@ -542,7 +552,7 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
         double indIPC = reg->ind_ipc;
 
     //buscamos ipcDesde sea cual sea la opcion
-        if(strcmpi(descrip, filtroDescripcion[opc-1]) == 0 && strcmpi(regStr, regiones[region - 1]) == 0)
+        if(strcmpi(descrip, *(filtroDescripcion + opc - 1)) == 0 && strcmpi(regStr, regiones[region - 1]) == 0)
         {
             if(ipcDesde == 0 && ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
             {
@@ -576,9 +586,10 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     }
     if(ipcDesde == 0 || (opc==1 && ipcHasta == 0))
     {
-        puts("No se encontraron datos de IPC en los periodos indicados..");
+        puts("No se encontraron datos de IPC en los periodos indicados...");
         if(fbin)
             fclose(fbin);
+
         return TODO_MAL;
     }
 
@@ -607,31 +618,38 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     return TODO_OK;
 }
 
-
 int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
 {
-    if (vecGrupo == NULL || vecGrupo->vec == NULL || vecGrupo->ce == 0) {
-        return TODO_MAL;///hacer esta validacion cada q recibimos punteros
+    if (vecGrupo == NULL || vecGrupo->vec == NULL || vecGrupo->ce == 0)
+    {
+        return TODO_MAL;
     }
 
     GRUPO *reg = (GRUPO *)vecGrupo -> vec;
     GRUPO *actual = reg;  //puntero para recorrer
     GRUPO *fin = reg + vecGrupo -> ce;  //puntero al final
 
+    int anioActual;
+    int mesActual;
+    char regionActual[30];
+    int cantBienes, cantServicios;
+    double sumBienes, sumServicios;
+
     printf("\n\n  [ANALISIS DE LA EVOLUCION DEL IPC POR GRUPOS]\n\n");
-    printf("%-7s | %-15s | %-9s | %-8s\n",
+    printf("%-10s | %-15s | %-9s | %-8s\n",
         "FECHA", "REGION", "BIENES", "SERVICIOS");
-    printf("--------+-----------------+-----------+----------\n");
+    printf("-----------+-----------------+-----------+----------\n");
 
     while (actual < fin)
     {
-        int anioActual = actual -> f.anio;
-        int mesActual = actual -> f.mes;
-        char regionActual[30];
+        anioActual = actual -> f.anio;
+        mesActual = actual -> f.mes;
         strcpy(regionActual, actual -> region);
 
-        int cantBienes = 0, cantServicios = 0;
-        double sumBienes = 0, sumServicios = 0;
+        cantBienes = 0;
+        cantServicios = 0;
+        sumBienes = 0;
+        sumServicios = 0;
 
         //iterar mientras los registros tengan la misma fecha y región (bloque grupo)
         while (actual < fin &&
@@ -665,8 +683,9 @@ int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
             double promBienes = (cantBienes > 0) ? sumBienes / cantBienes : 0;
             double promServicios = (cantServicios > 0) ? sumServicios / cantServicios : 0;
 
-            printf("%04d-%02d | %-15s | %9.4f | %9.4f\n",
+            printf("%04d-%02d-01 | %-15s | %9.4f | %9.4f\n",
             anioActual, mesActual, regionActual, promBienes, promServicios);
+
         }
     }
 
@@ -728,7 +747,7 @@ int ordGrupoDeRegion(VecGenerico *vec)
     return TODO_OK;
 }
 
-//Funcion generica (espero xd) de burbujeo god :3
+
 int burbujeo(void *vec, int lim, size_t tamElem, Cmp fDeCmp)
 {
     void *aux = malloc(tamElem);//con malloc por no saber el tipo de dato

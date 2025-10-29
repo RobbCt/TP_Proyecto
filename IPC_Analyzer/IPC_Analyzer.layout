@@ -2,29 +2,52 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="funciones.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1549" topLine="84" />
-		</Cursor>
-	</File>
 	<File name="mem.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="153" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1347" topLine="57" />
+			<Cursor1 position="153" topLine="0" />
 		</Cursor>
 		<Folding>
-			<Collapse line="77" />
-			<Collapse line="104" />
-			<Collapse line="127" />
+			<Collapse line="0" />
+			<Collapse line="11" />
+		</Folding>
+	</File>
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="652" topLine="21" />
+		</Cursor>
+		<Folding>
+			<Collapse line="81" />
+			<Collapse line="85" />
+			<Collapse line="108" />
+			<Collapse line="109" />
+			<Collapse line="130" />
+			<Collapse line="131" />
+		</Folding>
+	</File>
+	<File name="funciones.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1316" topLine="18" />
+		</Cursor>
+		<Folding>
+			<Collapse line="17" />
+			<Collapse line="24" />
+			<Collapse line="33" />
+			<Collapse line="45" />
+		</Folding>
+	</File>
+	<File name="mem.c" open="1" top="1" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="962" topLine="23" />
+		</Cursor>
+		<Folding>
+			<Collapse line="15" />
+			<Collapse line="31" />
+			<Collapse line="48" />
 		</Folding>
 	</File>
 	<File name="funciones.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="15650" topLine="396" />
+			<Cursor1 position="19906" topLine="35" />
 		</Cursor>
 		<Folding>
 			<Collapse line="28" />
@@ -33,34 +56,31 @@
 			<Collapse line="67" />
 			<Collapse line="75" />
 			<Collapse line="87" />
-			<Collapse line="92" />
 			<Collapse line="101" />
-			<Collapse line="103" />
 			<Collapse line="113" />
-			<Collapse line="115" />
 			<Collapse line="125" />
+			<Collapse line="128" />
 			<Collapse line="136" />
+			<Collapse line="139" />
 			<Collapse line="147" />
 			<Collapse line="167" />
 			<Collapse line="183" />
-			<Collapse line="194" />
 			<Collapse line="210" />
-			<Collapse line="216" />
 			<Collapse line="226" />
+			<Collapse line="240" />
 			<Collapse line="258" />
 			<Collapse line="276" />
-			<Collapse line="374" />
-		</Folding>
-	</File>
-	<File name="mem.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="131" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="11" />
-			<Collapse line="29" />
-			<Collapse line="44" />
-			<Collapse line="60" />
+			<Collapse line="325" />
+			<Collapse line="379" />
+			<Collapse line="385" />
+			<Collapse line="392" />
+			<Collapse line="441" />
+			<Collapse line="467" />
+			<Collapse line="485" />
+			<Collapse line="520" />
+			<Collapse line="621" />
+			<Collapse line="725" />
+			<Collapse line="751" />
 		</Folding>
 	</File>
 </CodeBlocks_layout_file>

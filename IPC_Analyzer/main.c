@@ -57,7 +57,6 @@ int main()
 
     ordGrupoDeRegion(&vecGrupo);
 
-
     //imprimirVecGrupo(&vecGrupo);///(opciona)
 
     menu(&vecDivision, &vecApertura, &vecGrupo); //aun es modificable y puede ser utilizado para mas puntos
