@@ -12,20 +12,21 @@
 
 void imprimirVecDiv(VecGenerico*);
 
-//necesario que sigan siendo dos funciones distintas?? no, permiso para unificarla¿
 void imprimirVecGrupo(VecGenerico*);
 void imprimirVecAp(VecGenerico*);
 
-int main()
+
+//set programs' arguments: ../Data/serie_ipc_divisiones.csv ../Data/serie_ipc_aperturas.csv
+int main(int argc, char *argv[])
 {
-    FILE *archTxtD = fopen("../Data/serie_ipc_divisiones.csv","rt");
+    FILE *archTxtD = fopen(argv[1],"rt");
 
     if(!archTxtD){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_divisiones");
         exit(1);
     }
 
-    FILE *archTxtA = fopen("../Data/serie_ipc_aperturas.csv","rt");
+    FILE *archTxtA = fopen(argv[2],"rt");
     if(!archTxtA){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_aperturas");
         fclose(archTxtD);
@@ -57,9 +58,9 @@ int main()
 
     ordGrupoDeRegion(&vecGrupo);
 
-    //imprimirVecGrupo(&vecGrupo);///(opciona)
+    //imprimirVecGrupo(&vecGrupo);///(opcional)
 
-    menu(&vecDivision, &vecApertura, &vecGrupo); //aun es modificable y puede ser utilizado para mas puntos
+    menu(&vecDivision, &vecApertura, &vecGrupo);
 
     /////////////////WORK///////////////////
 

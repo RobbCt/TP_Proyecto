@@ -18,10 +18,9 @@ int comaApunto(char *);
 int valInt(int,int);
 double valDoub(int li);
 FECHA valFecha();
-int esBien(char*, const char*[]);
-int esServicio(char*, const char*[]);
+bool esBien(char*, const char*[]);
+bool esServicio(char*, const char*[]);
 int setearVarGrupo(DIVISION*,GRUPO*,char*);
-
 
 
 //utilitarias
@@ -122,26 +121,24 @@ FECHA valFecha()
     return x;
 }
 
-int esBien(char* descrip, const char* bienes[])
+bool esBien(char* descrip, const char* bienes[])
 {
     int i;
     for(i=0;i<5;i++)
-    {
         if(strcmpi(descrip, bienes[i])==0)
-            return 1;
-    }
-    return 0;
+            return true;
+
+    return false;
 }
 
-int esServicio(char* descrip, const char* servicios[])
+bool esServicio(char* descrip, const char* servicios[])
 {
     int i;
     for(i=0;i<8;i++)
-    {
         if(strcmpi(descrip, servicios[i])==0)
-            return 1;
-    }
-    return 0;
+            return true;
+
+    return false;
 }
 
 int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
@@ -158,9 +155,6 @@ int setearVarGrupo(DIVISION* division,GRUPO* grupo,char* categoria)
 
     return TODO_OK;
 }
-
-
-
 
 
 //definicion de primitivas
@@ -274,8 +268,7 @@ int aperturaConversionFecha(char* fechaStr, DIVISION* regAp)
 
 int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 {
-    if (vecDivision == NULL || vecDivision->vec == NULL || vecDivision->ce == 0)
-    {
+    if (vecDivision == NULL || vecDivision->vec == NULL || vecDivision->ce == 0){
         return TODO_MAL;
     }
 
@@ -312,12 +305,8 @@ int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
 
         ind++;
     }
-
     return TODO_OK;
 }
-
-
-
 
 
 //definicion de primitivasn't
@@ -341,7 +330,6 @@ int regTextADiv(DIVISION *regV, char *regT)
 
     cortarUltimoCampo(regT);
 
-
     pIniCamp = IniCampSinComillas(regT); //v_m_IPC
     setDouble(pIniCamp,&regV -> v_m_ipc);
 
@@ -356,9 +344,6 @@ int regTextADiv(DIVISION *regV, char *regT)
     setString(pIniCamp,regV -> clasif);
 
     cortarUltimoCampo(regT);
-
-    if(!strrchr(regT, ';'))
-        return TODO_MAL;
 
     if(*(strrchr(regT,';') + 1) == '"') //DESCRIPCION
         pIniCamp = IniCampConComillas(regT);
@@ -439,7 +424,6 @@ int regTextAAp(DIVISION *regAp, char *regT)
 
 int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec)
 {
-
     if(vec->ce == vec->cap)
         if(!redimensionarVector(vec, vec->cap * INCR_FACTOR))
             return TODO_MAL;
@@ -469,6 +453,7 @@ int menu(VecGenerico* vecDivision, VecGenerico* vecApertura, VecGenerico* vecGru
 
     puts("\n--MENU PRINCIPAL--\n");
     puts("Seleccione:\n1 - Variacion del IPC en Nivel general\n2 - Calculadora de alquileres\n3 - Analisis de la evolucion del IPC por grupos\n4 - Salir");
+    puts("Opcion: ");
     opcionMenu = valInt(1,4);
 
     switch(opcionMenu)
@@ -476,7 +461,7 @@ int menu(VecGenerico* vecDivision, VecGenerico* vecApertura, VecGenerico* vecGru
         case 1: menu_ipc(vecDivision, opcionMenu); break;
         case 2: menu_ipc(vecApertura, opcionMenu); break;
         case 3: evoIpcPorGrup(vecGrupo,"Nacional");break;
-        default: puts("Fin del programa¿");
+        default: puts("Fin del programa.");
     }
     return TODO_OK;
 }
@@ -487,20 +472,19 @@ int menu_ipc(VecGenerico* vec, int opc)
     int region;
     FECHA desde, hasta;
 
-    puts("\n\n--MONTOS AJUSTADOS--\n");//cambiar el name?¿
+    puts("\n\n--MONTOS--\n");
     puts("Ingrese un monto expresado en pesos: ");
     monto= valDoub(0);
 
     puts("\nSeleccione la region correspondiente:");
     puts("1 - Nacional\n2 - GBA\n3 - Pampeana\n4 - Cuyo\n5 - Noroeste\n6 - Noreste\n7 - Patagonia\n");
-    puts("Opcion: ");
+    puts("\nOpcion: ");
     region = valInt(1,7);
 
     puts("\nIngrese Periodo Desde formato [aaaa-mm]");
     desde = valFecha();
 
-    if(opc == 1)
-    {
+    if(opc == 1)//solo si se pidió la validación del IPC
         do{
             puts("Ingrese Periodo Hasta formato [aaaa-mm]: ");
             hasta = valFecha();
@@ -508,8 +492,6 @@ int menu_ipc(VecGenerico* vec, int opc)
             if((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes))
                 puts("Invalido, el periodo [Hasta] no puede ser menor (o igual) a periodo [Desde], reingrese...");
         }while((hasta.anio < desde.anio) || (hasta.anio == desde.anio && hasta.mes <= desde.mes));
-
-    }
 
     if(!ajustarMontoIPC(vec, monto, region, desde, hasta, opc))
         return TODO_MAL;
@@ -524,9 +506,12 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     }
 
     double ipcDesde = 0, ipcHasta = 0;
+    double montoAjustado, variacion;
     int i = 0;
     FECHA fDesde, fHasta;
     DIVISION* reg;
+
+    TABLA t;
 
     //para busqueda del ipc de periodo
     char* descrip;
@@ -535,7 +520,7 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     double indIPC;
 
     FILE* fbin = NULL;
-    if(opc == 2) // APERTURA: crear archivo binario
+    if(opc == 2) // caso APERTURA: crear archivo binario
     {
         fbin = fopen("../Data/tabla_ipc.bin","w+b");
         if(!fbin)
@@ -565,7 +550,7 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
                 fDesde = periodo;
 
                 if(periodo.anio != desde.anio || periodo.mes != desde.mes)
-                    puts("\nNo encontramos la fecha exacta, se escoge la más cercana...");
+                    puts("\nNo encontramos la fecha exacta, se escoge la mas cercana...");
             }
             if(opc == 1)//buscamos el ipc hasta solo para desc=nivel gral
             {
@@ -576,9 +561,8 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
                 }
             }
             else //guardamos todos los periodos desde el inicio para la tabla mes a mes solo para aperturas
-                if(ipcDesde > 0)// && ((periodo.anio > desde.anio) || (periodo.anio == desde.anio && periodo.mes >= desde.mes)))
+                if(ipcDesde > 0)
                 {
-                    TABLA t;
                     t.f = periodo;
                     t.ipc = indIPC;
                     t.montoAjustado = monto * (indIPC / ipcDesde);
@@ -599,8 +583,8 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
         return TODO_MAL;
     }
 
-    double montoAjustado = monto * (ipcHasta / ipcDesde);
-    double variacion = (ipcHasta / ipcDesde - 1) * 100;
+    montoAjustado = monto * (ipcHasta / ipcDesde);
+    variacion = (ipcHasta / ipcDesde - 1) * 100;
 
     printf("\nMonto inicial: %.2lf$", monto);
     printf("\nPeriodo desde: %d-%02d \t IPC: %.2lf", fDesde.anio, fDesde.mes, ipcDesde);
@@ -611,7 +595,6 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
     else
     {
         rewind(fbin);
-        TABLA t;
 
         printf("\n\n%-7s | %-9s | %-14s | %-19s |","FECHA","IPC","MONTO AJUSTADO","VARIACION ACUMULADA");
         printf("\n------------------------------------------------------------\n");
@@ -628,8 +611,7 @@ int ajustarMontoIPC(VecGenerico* vec, double monto, int region, FECHA desde, FEC
 
 int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
 {
-    if (vecGrupo == NULL || vecGrupo->vec == NULL || vecGrupo->ce == 0)
-    {
+    if (vecGrupo == NULL || vecGrupo->vec == NULL || vecGrupo->ce == 0){
         return TODO_MAL;
     }
 
@@ -637,8 +619,7 @@ int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
     GRUPO *actual = reg;  //puntero para recorrer
     GRUPO *fin = reg + vecGrupo -> ce;  //puntero al final
 
-    int anioActual;
-    int mesActual;
+    int anioActual, mesActual;
     char regionActual[30];
     int cantBienes, cantServicios;
     double sumBienes, sumServicios;
@@ -653,10 +634,7 @@ int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
         mesActual = actual -> f.mes;
         strcpy(regionActual, actual -> region);
 
-        cantBienes = 0;
-        cantServicios = 0;
-        sumBienes = 0;
-        sumServicios = 0;
+        cantBienes = cantServicios = sumBienes = sumServicios = 0;
 
         //iterar mientras los registros tengan la misma fecha y región (bloque grupo)
         while (actual < fin &&
@@ -699,12 +677,7 @@ int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
     return TODO_OK;
 }
 
-
-
-
-
 //ordenamiento
-
 int ordPorReg(VecGenerico* vec)
 {
     GRUPO *reg = (GRUPO *)vec -> vec; //guardo el vector
@@ -724,13 +697,10 @@ int ordPorReg(VecGenerico* vec)
             reg++;
             lim++;
         }
-
         burbujeo(vec, ini, lim, cmpRegion);
     }
-
     return TODO_OK;
 }
-
 
 int ordGrupoDeRegion(VecGenerico *vec)
 {
@@ -750,10 +720,8 @@ int ordGrupoDeRegion(VecGenerico *vec)
             reg++;
             lim++;
         }
-
         burbujeo(vec, ini, lim, cmpGrupo);
     }
-
     return TODO_OK;
 }
 
@@ -782,7 +750,6 @@ int burbujeo(VecGenerico *vec, int ini, int lim, Cmp fDeCmp)
             }
         }
     }
-
     free(aux);
     return TODO_OK;
 }

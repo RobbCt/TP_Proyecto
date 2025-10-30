@@ -85,7 +85,7 @@ int regTextAAp(DIVISION *, char *);
 int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*);
 
 int menu(VecGenerico*, VecGenerico*, VecGenerico*);
-
+// Submenú específico para IPC
 int menu_ipc(VecGenerico*, int);
 
 int ajustarMontoIPC(VecGenerico*, double, int, FECHA, FECHA, int);
