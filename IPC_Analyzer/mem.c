@@ -10,7 +10,7 @@
 //vectorCrear(dir var tipo vecGenerico, tam de elemento)
 bool vectorCrear(VecGenerico* vec, size_t tam)
 {
-    vec->vec = malloc(tam * DEFAULT_CAP);
+    vec -> vec = malloc(tam * DEFAULT_CAP);
 
     if(!(vec->vec))
     {
@@ -19,31 +19,32 @@ bool vectorCrear(VecGenerico* vec, size_t tam)
         return false;
     }
 
-    vec->ce = 0;
-    vec->cap = DEFAULT_CAP;
+    vec -> ce = 0;
+    vec -> cap = DEFAULT_CAP;
+    vec -> tamElem = tam;
 
     return true;
 }
 
-//vectorAgregar(dir elemento, dir vector, tam del elemento)
-bool vectorAgregar(void* elem, VecGenerico* vec, size_t tam)
+//vectorAgregar(dir elemento, dir vector)
+bool vectorAgregar(void* elem, VecGenerico* vec)
 {
     if (vec->ce >= vec->cap)
     {
-        if(!redimensionarVector(vec,vec->cap * INCR_FACTOR,tam))
+        if(!redimensionarVector(vec,vec->cap * INCR_FACTOR))
             return false;
     }
 
-    memcpy((char*)vec->vec + vec->ce * tam, elem, tam);
+    memcpy((char*)vec->vec + vec->ce * vec -> tamElem, elem, vec -> tamElem);
     vec->ce++;
 
     return true;
 }
 
-//redimensionarVector(dir var tipo vecGenerico, nueva cantidad de indices, tam del elemento)
-bool redimensionarVector(VecGenerico* vec,size_t cap,size_t tam)
+//redimensionarVector(dir var tipo vecGenerico, nueva cantidad de indices)
+bool redimensionarVector(VecGenerico* vec,size_t cap)
 {
-    void* temporal = realloc(vec->vec, cap * tam);
+    void* temporal = realloc(vec->vec, cap * vec -> tamElem);
 
     if(!(temporal))
     {

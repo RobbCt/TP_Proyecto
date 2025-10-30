@@ -13,13 +13,14 @@ typedef struct
     void *vec;
     size_t ce;
     size_t cap;
+    size_t tamElem;
 }VecGenerico;
 
 bool vectorCrear(VecGenerico*,size_t);
 
-bool vectorAgregar(void*, VecGenerico*, size_t);
+bool vectorAgregar(void*, VecGenerico*);
 
-bool redimensionarVector(VecGenerico*,size_t,size_t);
+bool redimensionarVector(VecGenerico*,size_t);
 
 void vectorDestruir(VecGenerico*);
 

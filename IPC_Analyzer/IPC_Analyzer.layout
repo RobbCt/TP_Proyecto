@@ -2,40 +2,40 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="mem.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
+	<File name="mem.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="153" topLine="0" />
+			<Cursor1 position="131" topLine="3" />
 		</Cursor>
-	</File>
-	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="646" topLine="46" />
-		</Cursor>
-		<Folding>
-			<Collapse line="76" />
-			<Collapse line="103" />
-			<Collapse line="126" />
-		</Folding>
 	</File>
 	<File name="funciones.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="269" topLine="72" />
-		</Cursor>
-	</File>
-	<File name="mem.c" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="4" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1065" topLine="0" />
+			<Cursor1 position="1908" topLine="12" />
 		</Cursor>
 		<Folding>
-			<Collapse line="11" />
-			<Collapse line="29" />
-			<Collapse line="44" />
-			<Collapse line="60" />
+			<Collapse line="17" />
+			<Collapse line="24" />
+			<Collapse line="33" />
 		</Folding>
 	</File>
-	<File name="funciones.c" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="5" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="12653" topLine="152" />
+			<Cursor1 position="1466" topLine="31" />
+		</Cursor>
+		<Folding>
+			<Collapse line="76" />
+			<Collapse line="81" />
+			<Collapse line="85" />
+			<Collapse line="103" />
+			<Collapse line="108" />
+			<Collapse line="109" />
+			<Collapse line="126" />
+			<Collapse line="130" />
+			<Collapse line="131" />
+		</Folding>
+	</File>
+	<File name="funciones.c" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="6" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15670" topLine="207" />
 		</Cursor>
 		<Folding>
 			<Collapse line="28" />
@@ -44,49 +44,33 @@
 			<Collapse line="67" />
 			<Collapse line="75" />
 			<Collapse line="87" />
-			<Collapse line="92" />
 			<Collapse line="101" />
-			<Collapse line="103" />
 			<Collapse line="113" />
-			<Collapse line="115" />
 			<Collapse line="125" />
+			<Collapse line="128" />
 			<Collapse line="136" />
+			<Collapse line="139" />
 			<Collapse line="147" />
-			<Collapse line="167" />
-			<Collapse line="175" />
 			<Collapse line="183" />
-			<Collapse line="194" />
-			<Collapse line="210" />
-			<Collapse line="216" />
-			<Collapse line="226" />
 			<Collapse line="240" />
-			<Collapse line="248" />
-			<Collapse line="258" />
-			<Collapse line="276" />
-			<Collapse line="278" />
-			<Collapse line="287" />
-			<Collapse line="294" />
-			<Collapse line="301" />
-			<Collapse line="325" />
-			<Collapse line="379" />
-			<Collapse line="385" />
-			<Collapse line="392" />
-			<Collapse line="441" />
-			<Collapse line="523" />
-			<Collapse line="632" />
-			<Collapse line="711" />
-			<Collapse line="716" />
-			<Collapse line="722" />
+			<Collapse line="257" />
+			<Collapse line="275" />
+			<Collapse line="378" />
+			<Collapse line="384" />
+			<Collapse line="391" />
+			<Collapse line="440" />
+			<Collapse line="466" />
+			<Collapse line="484" />
+			<Collapse line="629" />
+			<Collapse line="708" />
 			<Collapse line="735" />
-			<Collapse line="741" />
-			<Collapse line="747" />
 			<Collapse line="760" />
-			<Collapse line="768" />
-			<Collapse line="770" />
-			<Collapse line="777" />
 			<Collapse line="790" />
-			<Collapse line="798" />
-			<Collapse line="806" />
 		</Folding>
+	</File>
+	<File name="mem.h" open="1" top="1" tabpos="5" split="0" active="1" splitpos="0" zoom_1="8" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="389" topLine="9" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

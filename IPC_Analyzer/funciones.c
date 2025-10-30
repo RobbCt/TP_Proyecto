@@ -175,7 +175,7 @@ int divisionesArchTextAVar(FILE* archTxt,VecGenerico* vecDivision)
     while(fgets(regT,MAXTAMREG,archTxt))
     {
         regTextADiv(&regV,regT);
-        vectorAgregar(&regV,vecDivision,sizeof(DIVISION));
+        vectorAgregar(&regV,vecDivision);
     }
     return TODO_OK;
 }
@@ -248,8 +248,7 @@ int aperturasArchTextAVar(FILE* archTxt,VecGenerico* vecAp)
     while(fgets(regT,MAXTAMREG,archTxt))
     {
         regTextAAp(&regAp,regT);
-
-        vectorAgregar(&regAp,vecAp,sizeof(DIVISION));
+        vectorAgregar(&regAp,vecAp);
     }
 
     return TODO_OK;
@@ -309,7 +308,7 @@ int grupoClasif(VecGenerico* vecDivision,VecGenerico* vecGrupo)
             setearVarGrupo(&division,&grupo,"Servicio");
 
         if(escribir)
-            vectorInsertOrdPorCamp(&grupo,vecGrupo,sizeof(GRUPO));
+            vectorInsertOrdPorCamp(&grupo,vecGrupo);
 
         ind++;
     }
@@ -438,11 +437,11 @@ int regTextAAp(DIVISION *regAp, char *regT)
     return  TODO_OK;
 }
 
-int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec,size_t tam)
+int vectorInsertOrdPorCamp(GRUPO* elem,VecGenerico* vec)
 {
 
     if(vec->ce == vec->cap)
-        if(!redimensionarVector(vec, vec->cap * INCR_FACTOR, tam))
+        if(!redimensionarVector(vec, vec->cap * INCR_FACTOR))
             return TODO_MAL;
 
     GRUPO* pInsert = (GRUPO*) vec -> vec;
@@ -481,8 +480,6 @@ int menu(VecGenerico* vecDivision, VecGenerico* vecApertura, VecGenerico* vecGru
     }
     return TODO_OK;
 }
-
-
 
 int menu_ipc(VecGenerico* vec, int opc)
 {
@@ -710,13 +707,15 @@ int evoIpcPorGrup(VecGenerico* vecGrupo, char* region)
 
 int ordPorReg(VecGenerico* vec)
 {
-    GRUPO *reg = (GRUPO *)vec->vec; //guardo el vector
+    GRUPO *reg = (GRUPO *)vec -> vec; //guardo el vector
     int pos = 0, lim;
+
+    GRUPO *regAct;
 
     while (pos < vec->ce)
     {
-        GRUPO *ini = reg; //guardo la dir del primer elemento
-        GRUPO *regAct = reg; //guardo el campo a comparar del primer indice
+        int ini = pos; //guardo el indice del primer elemento
+        regAct = reg; //guardo el campo a comparar del primer indice
         lim = 0;
 
         while (pos < vec->ce && cmpFecha(reg, regAct) == 0)
@@ -726,21 +725,22 @@ int ordPorReg(VecGenerico* vec)
             lim++;
         }
 
-        burbujeo(ini, lim, sizeof(GRUPO), cmpRegion);
+        burbujeo(vec, ini, lim, cmpRegion);
     }
 
     return TODO_OK;
 }
 
+
 int ordGrupoDeRegion(VecGenerico *vec)
 {
     GRUPO *reg = (GRUPO *)vec->vec;
-    char regAct[30] = "";
+    char regAct[30];
     int pos = 0;
 
     while (pos < vec->ce)
     {
-        GRUPO *ini = reg; // inicio del bloque de la región
+        int ini = pos; // inicio del bloque de la región
         strcpy(regAct, reg->region);
 
         int lim = 0;
@@ -751,34 +751,34 @@ int ordGrupoDeRegion(VecGenerico *vec)
             lim++;
         }
 
-        burbujeo(ini, lim, sizeof(GRUPO), cmpGrupo);
+        burbujeo(vec, ini, lim, cmpGrupo);
     }
 
     return TODO_OK;
 }
 
-int burbujeo(void *vec, int lim, size_t tamElem, Cmp fDeCmp)
+int burbujeo(VecGenerico *vec, int ini, int lim, Cmp fDeCmp)
 {
-    void *aux = malloc(tamElem);//con malloc por no saber el tipo de dato
+    void *aux = malloc(vec -> tamElem); //aux para el intercambio de elemento
     if(!aux)
         return TODO_MAL;
 
-    char *base = (char *)vec;//casteo para moverme n bytes
+    char *base = (char *)vec -> vec + ini * vec -> tamElem;//casteo para moverme n bytes
 
     for (int i = 0; i < lim - 1; i++)
     {
         for (int j = 0; j < lim - 1 - i; j++)
         {
             //defino los elem a comparar
-            void *a = base + j * tamElem;
-            void *b = base + (j + 1) * tamElem;
+            void *a = base + j * vec -> tamElem;
+            void *b = base + (j + 1) * vec -> tamElem;
 
             //a puro memcpy por ser puros voids* xd (hecho en base al resultado de la cmp en la f)
             if (fDeCmp(a, b) > 0)
             {
-                memcpy(aux, a, tamElem);
-                memcpy(a, b, tamElem);
-                memcpy(b, aux, tamElem);
+                memcpy(aux, a, vec -> tamElem);
+                memcpy(a, b, vec -> tamElem);
+                memcpy(b, aux, vec -> tamElem);
             }
         }
     }

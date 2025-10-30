@@ -82,7 +82,7 @@ int setDouble(char*,double*);
 
 int regTextAAp(DIVISION *, char *);
 
-int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*,size_t);
+int vectorInsertOrdPorCamp(GRUPO*,VecGenerico*);
 
 int menu(VecGenerico*, VecGenerico*, VecGenerico*);
 
@@ -104,7 +104,7 @@ int ordPorReg(VecGenerico*);
 
 int ordGrupoDeRegion(VecGenerico*);
 
-int burbujeo(void*, int, size_t , Cmp);
+int burbujeo(VecGenerico*, int, int, Cmp);
 
 int cmpRegion(const void*, const void*);
 
