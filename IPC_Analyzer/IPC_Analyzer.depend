@@ -34,7 +34,7 @@
 	<windows.h>
 	"funciones.h"
 
-1761756180 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
+1761791250 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\funciones.c
 	<stdlib.h>
 	<string.h>
 	<stdio.h>
@@ -47,7 +47,7 @@
 	<ctype.h>
 	"mem.h"
 
-1761756192 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
+1761783839 source:c:\users\roberto\desktop\material\topicos\repotp_proyecto\ipc_analyzer\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>

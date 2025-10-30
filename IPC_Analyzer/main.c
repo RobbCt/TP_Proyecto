@@ -25,7 +25,7 @@ int main()
         exit(1);
     }
 
-    FILE *archTxtA = fopen("../Data/serie_ipc_aperturas(test).csv","rt");
+    FILE *archTxtA = fopen("../Data/serie_ipc_aperturas.csv","rt");
     if(!archTxtA){
         puts("No se pudo abrir el archivo (.txt): serie_ipc_aperturas");
         fclose(archTxtD);
